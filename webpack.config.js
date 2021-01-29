@@ -4,39 +4,45 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const isDev = process.env.NODE_ENV === 'development';
-const isProd = !isDev;
+const devMode = process.env.NODE_ENV === 'development';
+const prodMode = !devMode;
 
 const filename = (ext) =>
-  isDev ? `[name].${ext}` : `[name].[contenthash].${ext}`;
+  devMode ? `[name].${ext}` : `[name].[contenthash].${ext}`;
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
+  target: 'web',
+  context: path.resolve(__dirname, './src'),
   mode: 'development',
+
   entry: {
     app: path.join(__dirname, './src/index.js'),
     styles: path.join(__dirname, './src/styles/index.scss'),
   },
-  devtool: isProd ? false : 'source-map',
+
+  devtool: prodMode ? 'source-map' : 'eval-cheap-module-source-map',
   output: {
-    filename: `./js/${filename('js')}`,
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: '',
+    filename: `${filename('js')}`,
+    path: path.join(__dirname, './dist'),
   },
+
   devServer: {
     historyApiFallback: true,
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.join(__dirname, './dist'),
     open: true,
     compress: true,
     hot: true,
     port: 3000,
+    writeToDisk: true,
   },
+
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/index.html'),
+      template: path.join(__dirname, './src/index.html'),
       filename: 'index.html',
       minify: {
-        collapseWhitespace: isProd,
+        collapseWhitespace: prodMode,
       },
     }),
     new CleanWebpackPlugin(),
@@ -46,12 +52,13 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'src/assets'),
-          to: path.resolve(__dirname, 'dist'),
+          from: path.join(__dirname, './src/assets'),
+          to: path.join(__dirname, './dist'),
         },
       ],
     }),
   ],
+
   module: {
     rules: [
       {
@@ -60,8 +67,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
+        exclude: [/node_modules/],
+        use: 'babel-loader',
       },
       {
         test: /\.css$/i,
@@ -69,7 +76,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: isDev,
+              hmr: devMode,
             },
           },
           'css-loader',
@@ -80,7 +87,7 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(?:|gif|png|jpg|jpeg|svg)$/,
+        test: /\.(?:|gif|png|jpe?g|svg)$/i,
         use: [
           {
             loader: 'file-loader',
@@ -91,12 +98,13 @@ module.exports = {
         ],
       },
       {
-        test: /\.(?:|woff2)$/,
+        test: /\.(woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: `./fonts/${filename('[ext]')}`,
+              outputPath: 'fonts',
+              name: `${filename('[ext]')}`,
             },
           },
         ],
