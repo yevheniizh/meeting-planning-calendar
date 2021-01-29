@@ -17,14 +17,11 @@ module.exports = {
     app: path.join(__dirname, './src/index.js'),
     styles: path.join(__dirname, './src/styles/index.scss'),
   },
-  devtool: 'source-map',
+  devtool: isProd ? false : 'source-map',
   output: {
     filename: `./js/${filename('js')}`,
     path: path.resolve(__dirname, 'dist'),
-    // publicPath: '/',
-    // filename: '[name].bundle.js',
-    // path: path.join(__dirname, '../dist'),
-    // chunkFilename: '[name]-[id].js',
+    publicPath: '/',
   },
   devServer: {
     historyApiFallback: true,
@@ -58,6 +55,15 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+      },
+      {
         test: /\.css$/i,
         use: [
           {
@@ -70,15 +76,31 @@ module.exports = {
         ],
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.s[ac]ss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(?:|gif|png|jpg|jpeg|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: `${filename('[ext]')}`,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(?:|woff2)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: `./fonts/${filename('[ext]')}`,
+            },
+          },
+        ],
       },
     ],
   },
-
-  // watch: true,
-
-  // watchOptions: {
-  //   aggregateTimeout: 100,
-  // },
 };
