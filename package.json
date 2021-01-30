@@ -1,7 +1,7 @@
 {
-  "name": "ciklum-task",
+  "name": "meeting-planning-calendar",
   "version": "1.0.0",
-  "description": "test-task-for-ciklum",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
@@ -16,7 +16,7 @@
     "normalize.css": "^8.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
+    "@babel/core": "^ 7.12.10",
     "@babel/preset-env": "^7.12.11",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.2",
