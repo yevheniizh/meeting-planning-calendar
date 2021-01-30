@@ -1,5 +1,5 @@
-@import './_vendor.scss';
+@import '~normalize.css';
 
-body {
-  background-color: yellowgreen;
-}
+/* Styles for components  */
+/* components */
+@import '../components/calendar/style.scss';
