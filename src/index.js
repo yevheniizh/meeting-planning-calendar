@@ -1,4 +1,4 @@
-import Calendar from './components/calendar';
+import Calendar from './pages/calendar';
 import teamMembers from './teamMembers-fixtures';
 import events from './events-fixtures';
 

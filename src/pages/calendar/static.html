@@ -26,5 +26,13 @@
     <title>Meeting planning calendar</title>
   </head>
 
-  <body></body>
+  <body id="root"></body>
+
+  <script type="module">
+    import Page from './index.js';
+
+    const page = new Page();
+
+    root.append(page.element);
+  </script>
 </html>
