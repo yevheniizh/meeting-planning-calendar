@@ -1,14 +1,12 @@
 $cell-height: 3rem;
 
-.calendar__timeline {
+.calendar__table {
   display: grid;
   grid-template: repeat(10, $cell-height) / repeat(6, 1fr);
-  grid-template-areas: 'header';
   border: 1px solid black;
+  // gap: 1px;
 
-  .calendar__timeline-column {
-    grid-column: 1 / 1;
-    grid-row: 1 / 1;
+  .calendar__table-column {
     margin: 0;
     padding: 0;
 
@@ -18,25 +16,39 @@ $cell-height: 3rem;
       height: 100%;
       width: 100%;
       text-align: center;
+
+      div {
+        background-color: cadetblue;
+      }
     }
+
+    .calendar__table-column-header {
+      background-color: var(--bs-secondary);
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+  }
+
+  ul:first-child {
+    font-weight: 900;
   }
 }
 
-.calendar__handling {
+.calendar__header {
   display: grid;
   height: 5rem;
   grid-template-columns: 2fr 2fr;
   align-items: center;
   justify-items: start;
 
-  .block {
+  .calendar__header_handling {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: 1fr 1fr;
     width: 100%;
 
-    .calendar__handling-dropdown,
-    .calendar__handling-newEventCreatingButton {
+    .calendar__header_handling-dropdown,
+    .calendar__header_handling-newEventCreatingButton {
       display: inline-flex;
       align-content: space-between;
       height: $cell-height;
@@ -52,8 +64,8 @@ $cell-height: 3rem;
       select {
         border-radius: 10px;
         width: 100%;
-        font-size: 1.2rem;
-        font-weight: 800;
+        font-size: 1.25rem;
+        font-weight: 700;
       }
     }
   }

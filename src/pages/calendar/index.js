@@ -10,16 +10,16 @@ export default class Page {
 
   get template() {
     return `
-      <main>
-        <div class='calendar__handling'>
+      <main class='calendar'>
+        <div class='calendar__header'>
           <div>
-            <h1 class='page-title'>Calendar</h1>
+            <h1>Calendar</h1>
           </div>
-          <div class='block'>
-            <div class='calendar__handling-dropdown'>
+          <div class='calendar__header_handling'>
+            <div class='calendar__header_handling-dropdown'>
               ${this.getTeamMemberEventsList()}
             </div>
-            <div class='calendar__handling-newEventCreatingButton'>
+            <div class='calendar__header_handling-newEventCreatingButton'>
               <button
                 type='submit'
                 name='newEvent'
@@ -31,9 +31,9 @@ export default class Page {
           </div>
         </div>
 
-        <div class='calendar__timeline'>
-          <ul class='calendar__timeline-column'>
-            <li>Name</li>
+        <div class='calendar__table'>
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Name</li>
             <li>10:00</li>
             <li>11:00</li>
             <li>12:00</li>
@@ -45,26 +45,72 @@ export default class Page {
             <li>18:00</li>
           </ul>
 
-          <div class='events'>
-            <ul class='wrap'>
-              <li class="events-group">
-                <div class="top-info"><span>Mon</span></div>
-              </li>
-
-              <li class="events-group">
-                <div class="top-info"><span>Tue</span></div>
-
-              <li class="events-group">
-                <div class="top-info"><span>Wed</span></div>
-
-              <li class="events-group">
-                <div class="top-info"><span>Thu</span></div>
-
-              <li class="events-group">
-                <div class="top-info"><span>Fri</span></div>
-              </li>
-            </ul>
-          </div>
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Mon</li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li>
+              <div>
+                Test
+              </div>
+            </li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Tue</li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+          
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Wed</li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Thu</li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+          <ul class='calendar__table-column'>
+            <li class='calendar__table-column-header'>Fri</li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
       </main>
     `;
@@ -83,7 +129,7 @@ export default class Page {
         <option selected>All members</option>
         ${this.teamMembers
           .map((member) => {
-            return `<option value="${member.name}">${member.name}</option>`;
+            return `<option value='${member.name}'>${member.name}</option>`;
           })
           .join('')}
       </select>
