@@ -1,10 +1,10 @@
 export default class Calendar {
   element; //html element
+  start = 10;
+  end = 18;
+  duration = 1;
 
-  constructor(teamMembers, events, { start = 10, end = 18, step = 1 } = {}) {
-    this.start = start;
-    this.end = end;
-    this.step = step;
+  constructor(teamMembers, events) {
     this.events = events;
     this.teamMembers = teamMembers;
 
@@ -44,7 +44,7 @@ export default class Calendar {
   getHandlingDropdown() {
     return `
     <div class='calendar__header_handling-dropdown'>
-      <select class='form-select form-select-lg border-dark bg-white'>
+      <select class='form-select form-select-lg'>
         <option>All members</option>
         ${this.teamMembers
           .map((member) => {
@@ -61,69 +61,63 @@ export default class Calendar {
       <button
         type='submit'
         name='newEvent'
-        class='btn btn-outline-dark bg-secondary'
-      >
-        New event +
-      </button>
+        class='btn btn-outline-dark'
+      >New event +</button>
     </div>`;
   }
 
   getTableBody() {
     return `
-      <div class='calendar__table'>
-        <ul class='calendar__table-column' data-dayColumn='Name'>
-          <li class='calendar__table-column-header'>
-            Name
-          </li>
-          ${this.getTableHoursColumn()}
-        </ul>
-  
-        <ul class='calendar__table-column' data-dayColumn='Mon'>
-          <li class='calendar__table-column-header'>
-            Mon
-          </li>
-          ${this.getTableColumn()}
-        </ul>
-  
-        <ul class='calendar__table-column' data-dayColumn='Tue'>
-          <li class='calendar__table-column-header'>
-            Tue
-          </li>
-          ${this.getTableColumn()}
-        </ul>
-  
-        <ul class='calendar__table-column' data-dayColumn='Wed'>
-          <li class='calendar__table-column-header'>
-            Wed
-          </li>
-          ${this.getTableColumn()}
-        </ul>
-  
-        <ul class='calendar__table-column' data-dayColumn='Thu'>
-          <li class='calendar__table-column-header'>
-            Thu
-          </li>
-          ${this.getTableColumn()}
-        </ul>
-  
-        <ul class='calendar__table-column' data-dayColumn='Fri'>
-          <li class='calendar__table-column-header'>
-            Fri
-          </li>
-          ${this.getTableColumn()}
-        </ul>
-      </div>
-    `;
+    <div class='calendar__table'>
+      <ul class='calendar__table-column' data-day='Name'>
+        <li class='calendar__table-column-header'>
+          Name
+        </li>
+        ${this.getTableHoursColumn()}
+      </ul>
+
+      <ul class='calendar__table-column' data-day='Mon'>
+        <li class='calendar__table-column-header'>
+          Mon
+        </li>
+        ${this.getTableColumn()}
+      </ul>
+
+      <ul class='calendar__table-column' data-day='Tue'>
+        <li class='calendar__table-column-header'>
+          Tue
+        </li>
+        ${this.getTableColumn()}
+      </ul>
+
+      <ul class='calendar__table-column' data-day='Wed'>
+        <li class='calendar__table-column-header'>
+          Wed
+        </li>
+        ${this.getTableColumn()}
+      </ul>
+
+      <ul class='calendar__table-column' data-day='Thu'>
+        <li class='calendar__table-column-header'>
+          Thu
+        </li>
+        ${this.getTableColumn()}
+      </ul>
+
+      <ul class='calendar__table-column' data-day='Fri'>
+        <li class='calendar__table-column-header'>
+          Fri
+        </li>
+        ${this.getTableColumn()}
+      </ul>
+    </div>`;
   }
 
   getTableHoursColumn() {
     let a = [];
 
-    for (let i = this.start; i <= this.end; i = i + this.step) {
-      a.push(`<li
-          data-start='${i}:00'
-          data-end='${i + this.step}:00'
-        >${i}:00</li>`);
+    for (let i = this.start; i <= this.end; i = i + this.duration) {
+      a.push(`<li>${i}:00</li>`);
     }
 
     return a.join('');
@@ -132,13 +126,12 @@ export default class Calendar {
   getTableColumn() {
     let a = [];
 
-    for (let i = this.start; i <= this.end; i = i + this.step) {
+    for (let i = this.start; i <= this.end; i = i + this.duration) {
       a.push(
         `<li
           data-start='${i}:00'
-          data-end='${i + this.step}:00'
-        >
-        </li>`
+          data-end='${i + this.duration}:00'
+        ></li>`
       );
     }
 

@@ -3,7 +3,7 @@ $cell-height: 3rem;
 .calendar__table {
   display: grid;
   grid-template: repeat(10, $cell-height) / repeat(6, 1fr);
-  border: 0.5px solid black;
+  border: 0.5px solid $gray-500;
 
   .calendar__table-column {
     margin: 0;
@@ -15,7 +15,7 @@ $cell-height: 3rem;
       height: 100%;
       width: 100%;
       text-align: center;
-      border: 0.5px solid black;
+      border: 0.5px solid $gray-500;
 
       div {
         background-color: cadetblue;
@@ -23,14 +23,10 @@ $cell-height: 3rem;
     }
 
     .calendar__table-column-header {
-      background-color: var(--bs-secondary);
+      background-color: $gray-300;
       font-size: 1.2rem;
-      font-weight: 900;
+      font-weight: 800;
     }
-  }
-
-  ul:first-child {
-    font-weight: 900;
   }
 }
 
@@ -52,22 +48,23 @@ $cell-height: 3rem;
       display: inline-flex;
       align-content: space-between;
       height: $cell-height;
-      cursor: pointer;
-      transition: transform 0.5s ease;
-
-      &:hover {
-        transform: scale(1.05);
-        // opacity: 0.8;
-      }
 
       & button,
       select {
-        // padding: 0 1rem;
         border-radius: 10px;
         height: 100%;
         width: 100%;
         font-size: 1.25rem;
-        font-weight: 700;
+        border: 2px solid $dark;
+        box-shadow: none;
+      }
+
+      & button {
+        background-color: $gray-300;
+
+        &:hover {
+          background-color: $gray-500;
+        }
       }
     }
   }
