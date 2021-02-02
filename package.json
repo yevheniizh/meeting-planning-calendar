@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^5.0.0-beta1",
     "eslint-config-airbnb": "^18.2.1",
     "normalize.css": "^8.0.1"
   },
