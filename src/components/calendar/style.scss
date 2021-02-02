@@ -1,9 +1,11 @@
 $cell-height: 3rem;
+$border: 2px solid $gray-500;
 
 .calendar__table {
   display: grid;
   grid-template: repeat(10, $cell-height) / repeat(6, 1fr);
-  border: 0.5px solid $gray-500;
+  border-top: $border;
+  border-right: $border;
 
   .calendar__table-column {
     margin: 0;
@@ -15,7 +17,8 @@ $cell-height: 3rem;
       height: 100%;
       width: 100%;
       text-align: center;
-      border: 0.5px solid $gray-500;
+      border-left: $border;
+      border-bottom: $border;
 
       div {
         background-color: cadetblue;
