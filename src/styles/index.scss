@@ -1,7 +1,6 @@
 @import '~normalize.css';
 @import './_common.scss';
-// @import './_variables.scss';
 
-/* Styles for pages  */
-/* pages */
-@import '../pages/calendar/style.scss';
+/* Styles for components  */
+/* components */
+@import '../components/calendar/style.scss';

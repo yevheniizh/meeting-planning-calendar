@@ -3,8 +3,7 @@ $cell-height: 3rem;
 .calendar__table {
   display: grid;
   grid-template: repeat(10, $cell-height) / repeat(6, 1fr);
-  border: 1px solid black;
-  // gap: 1px;
+  border: 0.5px solid black;
 
   .calendar__table-column {
     margin: 0;
@@ -16,6 +15,7 @@ $cell-height: 3rem;
       height: 100%;
       width: 100%;
       text-align: center;
+      border: 0.5px solid black;
 
       div {
         background-color: cadetblue;
@@ -62,7 +62,9 @@ $cell-height: 3rem;
 
       & button,
       select {
+        // padding: 0 1rem;
         border-radius: 10px;
+        height: 100%;
         width: 100%;
         font-size: 1.25rem;
         font-weight: 700;

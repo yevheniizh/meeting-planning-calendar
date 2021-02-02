@@ -1,6 +1,4 @@
-import Calendar from './pages/calendar';
-import teamMembers from './teamMembers-fixtures';
-import events from './events-fixtures';
+import Content from './pages/calendar';
 
 export default class MainPage {
   element; //html element
@@ -22,11 +20,11 @@ export default class MainPage {
 
   get template() {
     return `
-      <div>
-        <div class="calendar" data-element="calendar">
-          <!-- Calendar component -->
-        </div>
-      </div>
+      <main class='main'>
+        <section class="content" id="content" data-element="content">
+        
+        </section>
+      </main>
     `;
   }
 
@@ -40,8 +38,6 @@ export default class MainPage {
     this.initComponents();
 
     this.renderComponents();
-
-    document.body.append(this.element);
   }
 
   getSubElements(element) {
@@ -55,8 +51,8 @@ export default class MainPage {
   }
 
   initComponents() {
-    const calendar = new Calendar(teamMembers, events);
-    this.components.calendar = calendar;
+    const content = new Content();
+    this.components.content = content;
   }
 
   renderComponents() {
