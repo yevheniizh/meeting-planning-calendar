@@ -1,16 +1,13 @@
 import Calendar from '../../components/calendar/index.js';
-import teamMembers from '../../teamMembers-fixtures';
-import events from '../../events-fixtures';
+import teamMembers from '../../fixtures-team-members';
+import meetings from '../../fixtures-meetings';
 
 export default class Page {
   element; //html element
   subElements = {}; //selected elements
   components = {}; //imported initialized components
 
-  constructor(teamMembers, events) {
-    this.events = events;
-    this.teamMembers = teamMembers;
-
+  constructor() {
     this.render();
   }
 
@@ -47,7 +44,7 @@ export default class Page {
   }
 
   initComponents() {
-    const calendar = new Calendar(teamMembers, events);
+    const calendar = new Calendar(teamMembers, meetings);
     this.components.calendar = calendar;
   }
 
