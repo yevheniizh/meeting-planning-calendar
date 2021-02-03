@@ -1,11 +1,12 @@
 export default class Calendar {
   element; //html element
+  subElements = {};
   start = 10;
   end = 18;
   duration = 1;
 
-  constructor(teamMembers, events) {
-    this.events = events;
+  constructor(teamMembers, meetings) {
+    this.meetings = meetings;
     this.teamMembers = teamMembers;
 
     this.render();
@@ -17,6 +18,24 @@ export default class Calendar {
 
     const element = wrapper.firstElementChild;
     this.element = element;
+
+    this.renderMeeting();
+
+    this.subElements = this.getSubElements(this.element);
+
+    this.initEventListeners();
+
+    return this.element;
+  }
+
+  getSubElements(element) {
+    const elements = element.querySelectorAll('[data-meeting]');
+
+    return [...elements].reduce((accum, subElement) => {
+      accum[subElement.dataset.meeting] = subElement;
+
+      return accum;
+    }, {});
   }
 
   getTable() {
@@ -129,12 +148,52 @@ export default class Calendar {
     for (let i = this.start; i <= this.end; i = i + this.duration) {
       a.push(
         `<li
-          data-start='${i}:00'
-          data-end='${i + this.duration}:00'
+          data-time='${i}:00'
         ></li>`
       );
     }
 
     return a.join('');
   }
+
+  renderMeeting() {
+    // const arr = [...this.meetings];
+    // arr.map((meeting) => meeting.day);
+    const meeting = this.meetings[0];
+    const currentColumn = this.element.querySelector(
+      `[data-day='${meeting.day}']`
+    );
+    const currentRow = currentColumn.querySelector(
+      `[data-time='${meeting.time}']`
+    );
+
+    return (currentRow.innerHTML = `
+    <div data-meeting='${meeting.id}' data-name='${meeting.name}'>
+      <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
+          ${meeting.name}
+      </a>
+      <span class='calendar__table-column_meeting_delete' data-element='header'>&times;</span>
+    </div>
+    `);
+  }
+
+  initEventListeners() {
+    this.subElements['0000-0000-0000-0001'].addEventListener(
+      'pointerdown',
+      this.onRemoveMeetingClick
+    );
+  }
+
+  onRemoveMeetingClick = (event) => {
+    const chosenMeeting = event.target.closest('[data-meeting]');
+    const chosenMeetingName = chosenMeeting.dataset.name;
+
+    const modal = confirm(
+      `Are you sure you want to delete '${chosenMeetingName}' event?`
+    );
+
+    if (modal) {
+      chosenMeeting.remove();
+    }
+  };
 }

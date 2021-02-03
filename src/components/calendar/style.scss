@@ -21,7 +21,13 @@ $border: 2px solid $gray-500;
       border-bottom: $border;
 
       div {
-        background-color: cadetblue;
+        background-color: $green-300;
+        height: 100%;
+
+        .calendar__table-column_meeting {
+          text-decoration: none;
+          color: $dark;
+        }
       }
     }
 
