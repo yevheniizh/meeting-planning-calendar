@@ -157,31 +157,32 @@ export default class Calendar {
   }
 
   renderMeeting() {
-    // const arr = [...this.meetings];
-    // arr.map((meeting) => meeting.day);
-    const meeting = this.meetings[0];
-    const currentColumn = this.element.querySelector(
-      `[data-day='${meeting.day}']`
-    );
-    const currentRow = currentColumn.querySelector(
-      `[data-time='${meeting.time}']`
-    );
+    const arr = [...this.meetings];
+    arr.map((meeting) => {
+      const currentColumn = this.element.querySelector(
+        `[data-day='${meeting.day}']`
+      );
+      const currentRow = currentColumn.querySelector(
+        `[data-time='${meeting.time}']`
+      );
 
-    return (currentRow.innerHTML = `
-    <div data-meeting='${meeting.id}' data-name='${meeting.name}'>
-      <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
-          ${meeting.name}
-      </a>
-      <span class='calendar__table-column_meeting_delete' data-element='header'>&times;</span>
-    </div>
-    `);
+      return (currentRow.innerHTML = `
+      <div data-meeting='${meeting.id}' data-name='${meeting.name}'>
+        <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
+            ${meeting.name}
+        </a>
+        <span class='calendar__table-column_meeting_delete' data-element='header'>&times;</span>
+      </div>`);
+    });
   }
 
   initEventListeners() {
-    this.subElements['0000-0000-0000-0001'].addEventListener(
-      'pointerdown',
-      this.onRemoveMeetingClick
-    );
+    for (let key of Object.keys(this.subElements)) {
+      this.subElements[key].addEventListener(
+        'pointerdown',
+        this.onRemoveMeetingClick
+      );
+    }
   }
 
   onRemoveMeetingClick = (event) => {
