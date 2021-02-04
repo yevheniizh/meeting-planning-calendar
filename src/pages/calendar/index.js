@@ -1,5 +1,5 @@
 import Calendar from '../../components/calendar/index.js';
-import teamMembers from '../../fixtures-team-members';
+import members from '../../fixtures-members';
 import meetings from '../../fixtures-meetings';
 
 export default class Page {
@@ -44,7 +44,7 @@ export default class Page {
   }
 
   initComponents() {
-    const calendar = new Calendar(teamMembers, meetings);
+    const calendar = new Calendar(members, meetings);
     this.components.calendar = calendar;
   }
 

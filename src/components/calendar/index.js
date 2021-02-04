@@ -5,9 +5,22 @@ export default class Calendar {
   end = 18;
   duration = 1;
 
-  constructor(teamMembers, meetings) {
+  onRemoveMeetingClick = (event) => {
+    const chosenMeeting = event.target.closest('[data-meeting]');
+    const chosenMeetingName = chosenMeeting.dataset.name;
+
+    const modal = confirm(
+      `Are you sure you want to delete '${chosenMeetingName}' event?`
+    );
+
+    if (modal) {
+      chosenMeeting.remove();
+    }
+  };
+
+  constructor(members, meetings) {
     this.meetings = meetings;
-    this.teamMembers = teamMembers;
+    this.members = members;
 
     this.render();
   }
@@ -19,7 +32,7 @@ export default class Calendar {
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    this.renderMeeting();
+    this.renderMeetings(this.data);
 
     this.subElements = this.getSubElements(this.element);
 
@@ -53,21 +66,21 @@ export default class Calendar {
           <h1>Calendar</h1>
         </div>
         <div class='calendar__header_handling'>
-            ${this.getHandlingDropdown()}
+            ${this.getMembersDropdown()}
             ${this.getEventButton}
         </div>
       </div>
     `;
   }
 
-  getHandlingDropdown() {
+  getMembersDropdown() {
     return `
     <div class='calendar__header_handling-dropdown'>
-      <select class='form-select form-select-lg'>
-        <option>All members</option>
-        ${this.teamMembers
+      <select class='form-select form-select-lg' id='membersDropdown'>
+        <option selected value='All members'>All members</option>
+        ${this.members
           .map((member) => {
-            return `<option>${member.name}</option>`;
+            return `<option value='${member.name}'>${member.name}</option>`;
           })
           .join('')}
       </select>
@@ -156,8 +169,8 @@ export default class Calendar {
     return a.join('');
   }
 
-  renderMeeting() {
-    const arr = [...this.meetings];
+  renderMeetings(meetings = this.meetings) {
+    const arr = [...meetings];
     arr.map((meeting) => {
       const currentColumn = this.element.querySelector(
         `[data-day='${meeting.day}']`
@@ -169,7 +182,7 @@ export default class Calendar {
       return (currentRow.innerHTML = `
       <div data-meeting='${meeting.id}' data-name='${meeting.name}'>
         <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
-            ${meeting.name}
+          ${meeting.name}
         </a>
         <span class='calendar__table-column_meeting_delete' data-element='header'>&times;</span>
       </div>`);
@@ -177,24 +190,45 @@ export default class Calendar {
   }
 
   initEventListeners() {
+    //remove event from calendar
     for (let key of Object.keys(this.subElements)) {
       this.subElements[key].addEventListener(
         'pointerdown',
         this.onRemoveMeetingClick
       );
     }
+
+    //filter events by team member
+    const membersDropdown = this.element.querySelector('#membersDropdown');
+
+    membersDropdown.addEventListener('change', () => {
+      const chosenMember = membersDropdown.value;
+      this.filterMeetings(chosenMember);
+    });
   }
 
-  onRemoveMeetingClick = (event) => {
-    const chosenMeeting = event.target.closest('[data-meeting]');
-    const chosenMeetingName = chosenMeeting.dataset.name;
+  filterMeetings(chosenMember) {
+    switch (chosenMember) {
+      case 'All members':
+        return [...this.meetings];
 
-    const modal = confirm(
-      `Are you sure you want to delete '${chosenMeetingName}' event?`
-    );
+      case chosenMember:
+        const meetings = [...this.meetings];
+        const members = [...this.members];
 
-    if (modal) {
-      chosenMeeting.remove();
+        const idOfChosenMember = members.find(
+          ({ name }) => name === chosenMember
+        ).id;
+
+        const filteredMeetings = meetings.filter(({ members }) =>
+          members.some(({ id }) => id === idOfChosenMember)
+        );
+
+        this.data = filteredMeetings;
+        console.log(this.data);
+
+      default:
+        return [...this.meetings];
     }
-  };
+  }
 }
