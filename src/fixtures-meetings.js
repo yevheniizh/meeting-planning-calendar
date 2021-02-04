@@ -20,6 +20,20 @@ const meetings = [
     time: '17:00',
     members: [{ id: '0003' }, { id: '0004' }],
   },
+  {
+    id: '0000-0000-0000-0004',
+    name: 'FE team sync',
+    day: 'Thu',
+    time: '17:00',
+    members: [{ id: '0004' }],
+  },
+  {
+    id: '0000-0000-0000-0005',
+    name: 'Planning session',
+    day: 'Tue',
+    time: '10:00',
+    members: [{ id: '0001' }, { id: '0004' }],
+  },
 ];
 
 export default meetings;

@@ -32,7 +32,7 @@ export default class Calendar {
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    this.renderMeetings(this.data);
+    this.renderMeetings();
 
     this.subElements = this.getSubElements(this.element);
 
@@ -180,7 +180,7 @@ export default class Calendar {
       );
 
       return (currentRow.innerHTML = `
-      <div data-meeting='${meeting.id}' data-name='${meeting.name}'>
+      <div data-meeting='${meeting.id}' data-name='${meeting.name}' style='visibility: visible'>
         <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
           ${meeting.name}
         </a>
@@ -207,28 +207,36 @@ export default class Calendar {
     });
   }
 
-  filterMeetings(chosenMember) {
-    switch (chosenMember) {
-      case 'All members':
-        return [...this.meetings];
+  filterMeetings(chosenMember = 'All members') {
+    if (chosenMember === 'All members') {
+      for (let item of Object.keys(this.subElements)) {
+        this.subElements[item].style.visibility = 'visible';
+      }
 
-      case chosenMember:
-        const meetings = [...this.meetings];
-        const members = [...this.members];
+      return [...this.meetings];
+    }
 
-        const idOfChosenMember = members.find(
-          ({ name }) => name === chosenMember
-        ).id;
+    const meetings = [...this.meetings];
+    const members = [...this.members];
+    const idOfChosenMember = members.find(({ name }) => name === chosenMember)
+      .id;
 
-        const filteredMeetings = meetings.filter(({ members }) =>
-          members.some(({ id }) => id === idOfChosenMember)
-        );
+    // get all meetings that must be disabled
+    const filteredMeetings = meetings
+      .filter(({ members }) =>
+        members.every(({ id }) => id !== idOfChosenMember)
+      )
+      .map((item) => item.id);
 
-        this.data = filteredMeetings;
-        console.log(this.data);
+    // insert style = 'display: none' into filtered meetings
+    for (let item of filteredMeetings) {
+      if (Object.keys(this.subElements).includes(item)) {
+        for (let item of Object.keys(this.subElements)) {
+          this.subElements[item].style.visibility = 'visible';
+        }
 
-      default:
-        return [...this.meetings];
+        this.subElements[item].style.visibility = 'hidden';
+      }
     }
   }
 }
