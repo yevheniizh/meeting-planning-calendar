@@ -8,7 +8,7 @@ const meetings = [
   },
   {
     id: '0000-0000-0000-0002',
-    name: 'Planning session',
+    name: 'Annual planning session',
     day: 'Wed',
     time: '13:00',
     members: [{ id: '0001' }, { id: '0002' }],

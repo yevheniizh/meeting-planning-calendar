@@ -99,47 +99,34 @@ export default class Calendar {
   }
 
   getTableBody() {
-    return `
-    <div class='calendar__table'>
+    return `<div class='calendar__table'>
       <ul class='calendar__table-column' data-day='Name'>
-        <li class='calendar__table-column-header'>
-          Name
-        </li>
+        <li class='calendar__table-column-header'>Name</li>
         ${this.getTableHoursColumn()}
       </ul>
 
       <ul class='calendar__table-column' data-day='Mon'>
-        <li class='calendar__table-column-header'>
-          Mon
-        </li>
+        <li class='calendar__table-column-header'>Mon</li>
         ${this.getTableColumn()}
       </ul>
 
       <ul class='calendar__table-column' data-day='Tue'>
-        <li class='calendar__table-column-header'>
-          Tue
-        </li>
+        <li class='calendar__table-column-header'>Tue</li>
         ${this.getTableColumn()}
       </ul>
 
       <ul class='calendar__table-column' data-day='Wed'>
-        <li class='calendar__table-column-header'>
-          Wed
-        </li>
+        <li class='calendar__table-column-header'>Wed</li>
         ${this.getTableColumn()}
       </ul>
 
       <ul class='calendar__table-column' data-day='Thu'>
-        <li class='calendar__table-column-header'>
-          Thu
-        </li>
+        <li class='calendar__table-column-header'>Thu</li>
         ${this.getTableColumn()}
       </ul>
 
       <ul class='calendar__table-column' data-day='Fri'>
-        <li class='calendar__table-column-header'>
-          Fri
-        </li>
+        <li class='calendar__table-column-header'>Fri</li>
         ${this.getTableColumn()}
       </ul>
     </div>`;
@@ -184,18 +171,16 @@ export default class Calendar {
         <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
           ${meeting.name}
         </a>
-        <span class='calendar__table-column_meeting_delete' data-element='header'>&times;</span>
+        <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
       </div>`);
     });
   }
 
   initEventListeners() {
     //remove event from calendar
-    for (let key of Object.keys(this.subElements)) {
-      this.subElements[key].addEventListener(
-        'pointerdown',
-        this.onRemoveMeetingClick
-      );
+    const deleteButton = this.element.querySelectorAll('[data-delete]');
+    for (let button of deleteButton) {
+      button.addEventListener('pointerdown', this.onRemoveMeetingClick);
     }
 
     //filter events by team member
@@ -228,13 +213,14 @@ export default class Calendar {
       )
       .map((item) => item.id);
 
-    // insert style = 'display: none' into filtered meetings
+    // insert style = 'display: visible' into all meetings
+    for (let item of Object.keys(this.subElements)) {
+      this.subElements[item].style.visibility = 'visible';
+    }
+
+    // insert style = 'display: none' into filtered¸ meetings
     for (let item of filteredMeetings) {
       if (Object.keys(this.subElements).includes(item)) {
-        for (let item of Object.keys(this.subElements)) {
-          this.subElements[item].style.visibility = 'visible';
-        }
-
         this.subElements[item].style.visibility = 'hidden';
       }
     }
