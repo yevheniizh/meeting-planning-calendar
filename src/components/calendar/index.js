@@ -90,11 +90,15 @@ export default class Calendar {
   get getEventButton() {
     return `
     <div class='calendar__header_handling-newEventCreatingButton'>
+      <a href='/create-event'>
         <button
           type='submit'
           name='newEvent'
           class='btn btn-outline-dark'
-        >New event +</button>
+        >
+        New event +
+        </button>
+      </a>
     </div>`;
   }
 

@@ -91,9 +91,14 @@ $border: 2px solid $gray-500;
 
     .calendar__header_handling-dropdown,
     .calendar__header_handling-newEventCreatingButton {
-      display: inline-flex;
+      display: flex;
       align-content: space-between;
       height: $cell-height;
+
+      a {
+        height: 100%;
+        width: 100%;
+      }
 
       & button,
       select {
