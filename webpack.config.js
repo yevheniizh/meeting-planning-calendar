@@ -35,6 +35,7 @@ module.exports = {
     hot: true,
     port: 3000,
     writeToDisk: true,
+    openPage: 'calendar',
   },
 
   plugins: [
