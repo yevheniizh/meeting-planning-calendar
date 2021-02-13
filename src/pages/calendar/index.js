@@ -7,10 +7,6 @@ export default class Page {
   subElements = {}; //selected elements
   components = {}; //imported initialized components
 
-  constructor() {
-    this.render();
-  }
-
   get template() {
     return `
       <div class='schedule'>
@@ -31,6 +27,8 @@ export default class Page {
     this.initComponents();
 
     this.renderComponents();
+
+    return this.element;
   }
 
   getSubElements(element) {
@@ -55,5 +53,11 @@ export default class Page {
 
       root.append(element);
     });
+  }
+
+  destroy() {
+    for (const component of Object.values(this.components)) {
+      component.destroy();
+    }
   }
 }
