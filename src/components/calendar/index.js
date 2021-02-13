@@ -90,11 +90,11 @@ export default class Calendar {
   get getEventButton() {
     return `
     <div class='calendar__header_handling-newEventCreatingButton'>
-      <button
-        type='submit'
-        name='newEvent'
-        class='btn btn-outline-dark'
-      >New event +</button>
+        <button
+          type='submit'
+          name='newEvent'
+          class='btn btn-outline-dark'
+        >New event +</button>
     </div>`;
   }
 
@@ -224,5 +224,9 @@ export default class Calendar {
         this.subElements[item].style.visibility = 'hidden';
       }
     }
+  }
+
+  destroy() {
+    this.element.remove();
   }
 }
