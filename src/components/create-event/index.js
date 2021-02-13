@@ -120,5 +120,7 @@ export default class CreateEvent {
     return a.join('');
   }
 
-  initEventListener;
+  destroy() {
+    this.element.remove();
+  }
 }
