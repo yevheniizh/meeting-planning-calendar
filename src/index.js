@@ -10,6 +10,8 @@ export default class MainPage {
     this.router
       .addRoute(/^$/, 'calendar')
       .addRoute(/^calendar$/, 'calendar')
+      .addRoute(/404\/?$/, 'error404')
+      .setNotFoundPagePath('error404')
       .listen();
   }
 
