@@ -10,19 +10,18 @@ export default class MainPage {
     this.router
       .addRoute(/^$/, 'calendar')
       .addRoute(/^calendar$/, 'calendar')
+      .addRoute(/^create-event$/, 'create-event')
       .addRoute(/404\/?$/, 'error404')
       .setNotFoundPagePath('error404')
       .listen();
   }
 
   get template() {
-    return `
-      <main class='main'>
-        <section class="content" id="content" data-element="content">
+    return `<main class='main'>
+        <section class='content' id='content'>
         
         </section>
-      </main>
-    `;
+      </main>`;
   }
 
   render() {

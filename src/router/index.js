@@ -4,13 +4,12 @@ import renderPage from './render-page.js';
 export default class Router {
   constructor() {
     this.routes = [];
-    console.log(this.routes);
 
     this.initEventListeners();
   }
 
   initEventListeners() {
-    document.addEventListener('click', event => {
+    document.addEventListener('click', (event) => {
       const link = event.target.closest('a');
       if (!link) return;
 
@@ -31,7 +30,10 @@ export default class Router {
   }
 
   async route() {
-    let strippedPath = decodeURI(window.location.pathname).replace(/^\/|\/$/, '');
+    let strippedPath = decodeURI(window.location.pathname).replace(
+      /^\/|\/$/,
+      ''
+    );
 
     let match;
 
@@ -51,8 +53,8 @@ export default class Router {
     document.dispatchEvent(
       new CustomEvent('route', {
         detail: {
-          page: this.page
-        }
+          page: this.page,
+        },
       })
     );
   }
