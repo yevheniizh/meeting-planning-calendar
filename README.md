@@ -6,7 +6,7 @@ This is a simple app that shows schedule of meetings. You can add new one or rem
 
 ## Preview (click to open project)
 
-[![preview](./preview.png)](https://zzzhyrov.github.io/calendar/)
+[![preview](./preview.png)](https://zzzhyrov.github.io/meeting-planning-calendar/)
 
 ## Tech stack
 
