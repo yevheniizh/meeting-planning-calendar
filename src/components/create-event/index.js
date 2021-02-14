@@ -40,7 +40,7 @@ export default class CreateEvent {
       // meetings.push(this.eventData);
 
       setTimeout(() => {
-        document.location.href = '/calendar';
+        document.location.href = '/meeting-planning-calendar';
       }, 500);
     }
   };
@@ -106,7 +106,7 @@ export default class CreateEvent {
         </div>
 
         <div>
-          <a href='/calendar'>
+          <a href='/meeting-planning-calendar'>
             <button type="button" class="btn btn-secondary">Cancel</button>
           </a>
 
