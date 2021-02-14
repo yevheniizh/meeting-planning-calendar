@@ -97,7 +97,7 @@ export default class Calendar {
   get getEventButton() {
     return `
     <div class='calendar__header_handling-newEventCreatingButton'>
-      <a href='/meeting-planning-calendar/create-event'>
+      <a href='/create-event'>
         <button
           type='submit'
           name='newEvent'
