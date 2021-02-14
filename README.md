@@ -1,8 +1,12 @@
 # Meeting planning calendar
 
+## Description
+
+This is a simple app that shows schedule of meetings. You can add new one or remove existing meeting. Also you can filter meetings by participant.
+
 ## Preview (click to open project)
 
-[![preview](./preview.png)](https://zzzhyrov.github.io/meeting-planning-calendar/)
+[![preview](./preview.png)](https://zzzhyrov.github.io/calendar/)
 
 ## Tech stack
 
@@ -10,6 +14,7 @@
 - SCSS;
 - Bootstrap;
 - Webpack;
+- localStorage (as DB)
 
 ## Completed by
 
