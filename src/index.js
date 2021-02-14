@@ -8,8 +8,8 @@ export default class MainPage {
 
   initializeRouter() {
     this.router
-      .addRoute(/^$/, 'calendar')
-      // .addRoute(/^calendar$/, 'calendar')
+      // .addRoute(/^$/, 'calendar')
+      .addRoute(/^meeting-planning-calendar\/$/, 'calendar')
       .addRoute(/^create-event$/, 'create-event')
       .addRoute(/404\/?$/, 'error404')
       .setNotFoundPagePath('error404')
