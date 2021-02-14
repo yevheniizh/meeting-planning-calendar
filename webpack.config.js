@@ -35,7 +35,7 @@ module.exports = {
     hot: true,
     port: 3000,
     writeToDisk: true,
-    openPage: 'meeting-planning-calendar',
+    // openPage: 'meeting-planning-calendar',
   },
 
   plugins: [
