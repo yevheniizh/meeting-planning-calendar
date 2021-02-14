@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import escapeHtml from '../../utils/escape-html.js';
 
 export default class CreateEvent {
   element; //html element
@@ -173,7 +174,7 @@ export default class CreateEvent {
     const setEventName = element.querySelector('[data-name]').value;
 
     this.eventData.id = uuidv4();
-    this.eventData.name = setEventName;
+    this.eventData.name = escapeHtml(setEventName);
     this.eventData.day = Object.values(chosenDay).find(
       (item) => item.selected
     ).value;
