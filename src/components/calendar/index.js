@@ -9,6 +9,13 @@ export default class Calendar {
     const chosenMeeting = event.target.closest('[data-meeting]');
     const chosenMeetingName = chosenMeeting.dataset.name;
 
+    // new filtered copy of meetings
+    const newMeeting = JSON.parse(localStorage.getItem('meetingsDB')).filter(
+      (item) => item.id !== chosenMeeting.dataset.meeting
+    );
+
+    localStorage.setItem('meetingsDB', JSON.stringify(newMeeting));
+
     const modal = confirm(
       `Are you sure you want to delete '${chosenMeetingName}' event?`
     );
@@ -18,9 +25,9 @@ export default class Calendar {
     }
   };
 
-  constructor(members, meetings) {
-    this.meetings = meetings;
-    this.members = members;
+  constructor() {
+    this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
+    this.members = JSON.parse(localStorage.getItem('membersDB'));
 
     this.render();
   }
@@ -32,7 +39,7 @@ export default class Calendar {
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    this.renderMeetings();
+    this.renderMeetings(this.meetings);
 
     this.subElements = this.getSubElements(this.element);
 
@@ -160,7 +167,7 @@ export default class Calendar {
     return a.join('');
   }
 
-  renderMeetings(meetings = this.meetings) {
+  renderMeetings(meetings) {
     const arr = [...meetings];
     arr.map((meeting) => {
       const currentColumn = this.element.querySelector(

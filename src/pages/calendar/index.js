@@ -42,7 +42,13 @@ export default class Page {
   }
 
   initComponents() {
-    const calendar = new Calendar(members, meetings);
+    if (JSON.parse(localStorage.getItem('meetingsDB')) === null) {
+      localStorage.setItem('meetingsDB', JSON.stringify(meetings));
+    }
+
+    localStorage.setItem('membersDB', JSON.stringify(members));
+
+    const calendar = new Calendar();
     this.components.calendar = calendar;
   }
 

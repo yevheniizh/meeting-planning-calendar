@@ -1,6 +1,4 @@
 import CreateEvent from '../../components/create-event/index.js';
-import members from '../../fixtures-members';
-import meetings from '../../fixtures-meetings';
 
 export default class Page {
   element; //html element
@@ -40,7 +38,7 @@ export default class Page {
   }
 
   initComponents() {
-    const createEvent = new CreateEvent(members, meetings);
+    const createEvent = new CreateEvent();
     this.components.createEvent = createEvent;
   }
 
