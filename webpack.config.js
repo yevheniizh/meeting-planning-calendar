@@ -24,12 +24,12 @@ module.exports = {
   output: {
     publicPath: '',
     filename: `${filename('js')}`,
-    path: path.join(__dirname, './dist'),
+    path: path.join(__dirname, './build'),
   },
 
   devServer: {
     historyApiFallback: true,
-    contentBase: path.join(__dirname, './dist'),
+    contentBase: path.join(__dirname, './build'),
     open: true,
     compress: true,
     hot: true,
@@ -54,7 +54,7 @@ module.exports = {
       patterns: [
         {
           from: path.join(__dirname, './src/assets'),
-          to: path.join(__dirname, './dist'),
+          to: path.join(__dirname, './build'),
         },
       ],
     }),
