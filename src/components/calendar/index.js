@@ -25,11 +25,53 @@ export default class Calendar {
     }
   };
 
+  onDefineRights = () => {
+    this.remove();
+    this.render();
+
+    const calendarComponent = document.querySelector('#calendarPage');
+    calendarComponent.append(this.element);
+  };
+
+  logInModal() {
+    const wrapper = document.createElement('div');
+
+    const modal = `<div id="test">
+      <div class= "modal-dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Who are You?</h5>
+            </div>
+            <div class="modal-body">
+              ${this.getMembersDropdown()}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="submitRoleButton">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    wrapper.innerHTML = modal;
+    const element = wrapper.firstElementChild;
+
+    this.element = element;
+
+    this.initEventListeners();
+
+    const submitRoleButton = this.element.querySelector('#submitRoleButton');
+
+    submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
+    return this.element;
+  }
+
   constructor() {
     this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
-    this.render();
+    this.logInModal();
   }
 
   render() {
@@ -235,6 +277,12 @@ export default class Calendar {
         this.subElements[item].style.visibility = 'hidden';
       }
     }
+  }
+
+  remove() {
+    this.element.remove();
+    this.element = null;
+    document.removeEventListener('click', this.onDefineRights);
   }
 
   destroy() {

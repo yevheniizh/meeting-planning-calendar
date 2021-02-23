@@ -9,8 +9,8 @@ export default class Page {
 
   get template() {
     return `
-      <div class='schedule'>
-        <div data-element="calendar">
+      <div>
+        <div data-element="calendar" id="calendarPage">
           <!-- Calendar component -->
         </div>
       </div>
