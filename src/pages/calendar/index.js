@@ -1,6 +1,7 @@
-import Calendar from '../../components/calendar/index.js';
 import members from '../../fixtures-members';
 import meetings from '../../fixtures-meetings';
+
+import { User, Admin } from '../../components/userRoles';
 
 export default class Page {
   element; //html element
@@ -48,7 +49,7 @@ export default class Page {
 
     localStorage.setItem('membersDB', JSON.stringify(members));
 
-    const calendar = new Calendar();
+    const calendar = new User();
     this.components.calendar = calendar;
   }
 

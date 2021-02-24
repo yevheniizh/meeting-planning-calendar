@@ -4,6 +4,8 @@ export default class Calendar {
   start = 10;
   end = 18;
   duration = 1;
+  _name = '';
+  _rights = '';
 
   onRemoveMeetingClick = (event) => {
     const chosenMeeting = event.target.closest('[data-meeting]');
@@ -29,6 +31,15 @@ export default class Calendar {
     this.remove();
     this.render();
 
+    // set logged in member as default selected member in calendar dropdown
+    const setSelectedMemberInDropdown = this.element.querySelector(
+      `[data-member = ${this._name}]`
+    );
+    setSelectedMemberInDropdown.setAttribute('selected', '');
+
+    this.filterMeetings(setSelectedMemberInDropdown.value);
+
+    // paste rendered component into page
     const calendarComponent = document.querySelector('#calendarPage');
     calendarComponent.append(this.element);
   };
@@ -92,7 +103,7 @@ export default class Calendar {
     return `
     <div class='calendar__header_handling-dropdown'>
       <select class='form-select form-select-lg' id='membersDropdown'>
-        <option selected value='All members'>All members</option>
+        <option value='All members'>All members</option>
         ${this.membersList}
       </select>
     </div>`;
@@ -101,13 +112,22 @@ export default class Calendar {
   get membersList() {
     return this.members
       .map((member) => {
-        return `<option value='${member.name}' data-rights='${member.rights}'>${member.name}</option>`;
+        return `<option value='${member.name}' data-member='${member.name}'>${member.name}</option>`;
+      })
+      .join('');
+  }
+
+  get membersListModal() {
+    return this.members
+      .map((member) => {
+        return `<option value='${member.name}' data-member='${member.name}'>${member.name} (${member.rights})</option>`;
       })
       .join('');
   }
 
   get getEventButton() {
-    return `
+    if (this.canCreateMeetings()) {
+      return `
     <div class='calendar__header_handling-newEventCreatingButton'>
       <a href='/create-event'>
         <button
@@ -118,6 +138,18 @@ export default class Calendar {
         New event +
         </button>
       </a>
+    </div>`;
+    }
+
+    return `
+    <div class='calendar__header_handling-newEventCreatingButton'>
+        <button
+          type='submit'
+          name='newEvent'
+          class='btn btn-outline-dark disabled'
+        >
+        New event +
+        </button>
     </div>`;
   }
 
@@ -189,21 +221,33 @@ export default class Calendar {
         `[data-time='${meeting.time}']`
       );
 
-      return (currentRow.innerHTML = `
+      if (this.canDeleteMeetings()) {
+        return (currentRow.innerHTML = `
       <div data-meeting='${meeting.id}' data-name='${meeting.name}' style='visibility: visible'>
         <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
           ${meeting.name}
         </a>
         <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
       </div>`);
+      }
+
+      return (currentRow.innerHTML = `
+      <div data-meeting='${meeting.id}' data-name='${meeting.name}' style='visibility: visible'>
+        <div class='calendar__table-column_meeting'>
+          ${meeting.name}
+        </div>
+      </div>`);
     });
   }
 
   initEventListeners() {
     // remove event from calendar
-    const deleteButton = this.element.querySelectorAll('[data-delete]');
-    for (let button of deleteButton) {
-      button.addEventListener('pointerdown', this.onRemoveMeetingClick);
+
+    if (this.canDeleteMeetings()) {
+      const deleteButton = this.element.querySelectorAll('[data-delete]');
+      for (let button of deleteButton) {
+        button.addEventListener('pointerdown', this.onRemoveMeetingClick);
+      }
     }
 
     // filter events by team member
@@ -211,13 +255,11 @@ export default class Calendar {
 
     membersDropdown.addEventListener('change', () => {
       const chosenMember = membersDropdown.value;
-      console.log(chosenMember);
       this.filterMeetings(chosenMember);
-      this.getRights(chosenMember);
     });
   }
 
-  filterMeetings(chosenMember = 'All members') {
+  filterMeetings(chosenMember) {
     if (chosenMember === 'All members') {
       for (let item of Object.keys(this.subElements)) {
         this.subElements[item].style.visibility = 'visible';
@@ -249,14 +291,17 @@ export default class Calendar {
         this.subElements[item].style.visibility = 'hidden';
       }
     }
+
+    return filteredMeetings;
   }
 
-  getRights(chosenMember) {
-    const memberLoggedInRights = this.members.find(
+  setRights(chosenMember) {
+    const memberLoggedIn = this.members.find(
       (member) => chosenMember === member.name
-    ).rights;
+    );
 
-    console.log(memberLoggedInRights);
+    this._name = memberLoggedIn.name;
+    this._rights = memberLoggedIn.rights;
   }
 
   renderModal() {
@@ -267,15 +312,23 @@ export default class Calendar {
     this.element = element;
 
     // set first option selected by default in the list
-    const membersDropdown = this.element.querySelector('#membersDropdown');
-    const firstOption = membersDropdown.firstElementChild;
+    const membersDropdownModal = this.element.querySelector(
+      '#membersDropdownModal'
+    );
+    const firstOption = membersDropdownModal.firstElementChild;
     firstOption.setAttribute('selected', '');
 
-    this.initEventListeners();
+    this.setRights(firstOption.value);
 
     // init event Listener: choosing member and rights
     const submitRoleButton = this.element.querySelector('#submitRoleButton');
     submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
+
+    // filter events by team member
+    membersDropdownModal.addEventListener('change', () => {
+      const chosenMember = membersDropdownModal.value;
+      this.setRights(chosenMember);
+    });
   }
 
   get modalTemplate() {
@@ -287,8 +340,8 @@ export default class Calendar {
             <h5 class="modal-title" id="staticBackdropLabel">Who are You?</h5>
           </div>
           <div class="modal-body">
-            <select class='form-select form-select-lg' id='membersDropdown'>
-              ${this.membersList}
+            <select class='form-select form-select-lg' id='membersDropdownModal'>
+              ${this.membersListModal}
             </select>
           </div>
           <div class="modal-footer">
@@ -304,6 +357,10 @@ export default class Calendar {
     this.element.remove();
     this.element = null;
     document.removeEventListener('click', this.onDefineRights);
+    document.removeEventListener('change', () => {
+      const chosenMember = membersDropdownModal.value;
+      this.setRights(chosenMember);
+    });
   }
 
   destroy() {
