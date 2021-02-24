@@ -33,45 +33,11 @@ export default class Calendar {
     calendarComponent.append(this.element);
   };
 
-  logInModal() {
-    const wrapper = document.createElement('div');
-
-    const modal = `<div id="test">
-      <div class= "modal-dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Who are You?</h5>
-            </div>
-            <div class="modal-body">
-              ${this.getMembersDropdown()}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" id="submitRoleButton">Confirm</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-    wrapper.innerHTML = modal;
-    const element = wrapper.firstElementChild;
-
-    this.element = element;
-
-    this.initEventListeners();
-
-    const submitRoleButton = this.element.querySelector('#submitRoleButton');
-
-    submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
-    return this.element;
-  }
-
   constructor() {
     this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
-    this.logInModal();
+    this.renderModal();
   }
 
   render() {
@@ -127,13 +93,17 @@ export default class Calendar {
     <div class='calendar__header_handling-dropdown'>
       <select class='form-select form-select-lg' id='membersDropdown'>
         <option selected value='All members'>All members</option>
-        ${this.members
-          .map((member) => {
-            return `<option value='${member.name}'>${member.name}</option>`;
-          })
-          .join('')}
+        ${this.membersList}
       </select>
     </div>`;
+  }
+
+  get membersList() {
+    return this.members
+      .map((member) => {
+        return `<option value='${member.name}' data-rights='${member.rights}'>${member.name}</option>`;
+      })
+      .join('');
   }
 
   get getEventButton() {
@@ -230,18 +200,20 @@ export default class Calendar {
   }
 
   initEventListeners() {
-    //remove event from calendar
+    // remove event from calendar
     const deleteButton = this.element.querySelectorAll('[data-delete]');
     for (let button of deleteButton) {
       button.addEventListener('pointerdown', this.onRemoveMeetingClick);
     }
 
-    //filter events by team member
+    // filter events by team member
     const membersDropdown = this.element.querySelector('#membersDropdown');
 
     membersDropdown.addEventListener('change', () => {
       const chosenMember = membersDropdown.value;
+      console.log(chosenMember);
       this.filterMeetings(chosenMember);
+      this.getRights(chosenMember);
     });
   }
 
@@ -277,6 +249,55 @@ export default class Calendar {
         this.subElements[item].style.visibility = 'hidden';
       }
     }
+  }
+
+  getRights(chosenMember) {
+    const memberLoggedInRights = this.members.find(
+      (member) => chosenMember === member.name
+    ).rights;
+
+    console.log(memberLoggedInRights);
+  }
+
+  renderModal() {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = this.modalTemplate;
+
+    const element = wrapper.firstElementChild;
+    this.element = element;
+
+    // set first option selected by default in the list
+    const membersDropdown = this.element.querySelector('#membersDropdown');
+    const firstOption = membersDropdown.firstElementChild;
+    firstOption.setAttribute('selected', '');
+
+    this.initEventListeners();
+
+    // init event Listener: choosing member and rights
+    const submitRoleButton = this.element.querySelector('#submitRoleButton');
+    submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
+  }
+
+  get modalTemplate() {
+    return `<div id="test">
+    <div class= "modal-dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Who are You?</h5>
+          </div>
+          <div class="modal-body">
+            <select class='form-select form-select-lg' id='membersDropdown'>
+              ${this.membersList}
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="submitRoleButton">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
   }
 
   remove() {
