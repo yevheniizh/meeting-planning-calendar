@@ -4,8 +4,6 @@ export default class Calendar {
   start = 10;
   end = 18;
   duration = 1;
-  _name = '';
-  _rights = '';
 
   onRemoveMeetingClick = (event) => {
     const chosenMeeting = event.target.closest('[data-meeting]');
@@ -27,28 +25,11 @@ export default class Calendar {
     }
   };
 
-  onDefineRights = () => {
-    this.remove();
-    this.render();
-
-    // set logged in member as default selected member in calendar dropdown
-    const setSelectedMemberInDropdown = this.element.querySelector(
-      `[data-member = ${this._name}]`
-    );
-    setSelectedMemberInDropdown.setAttribute('selected', '');
-
-    this.filterMeetings(setSelectedMemberInDropdown.value);
-
-    // paste rendered component into page
-    const calendarComponent = document.querySelector('#calendarPage');
-    calendarComponent.append(this.element);
-  };
-
   constructor() {
     this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
-    this.renderModal();
+    this.render();
   }
 
   render() {
@@ -113,14 +94,6 @@ export default class Calendar {
     return this.members
       .map((member) => {
         return `<option value='${member.name}' data-member='${member.name}'>${member.name}</option>`;
-      })
-      .join('');
-  }
-
-  get membersListModal() {
-    return this.members
-      .map((member) => {
-        return `<option value='${member.name}' data-member='${member.name}'>${member.name} (${member.rights})</option>`;
       })
       .join('');
   }
@@ -293,74 +266,6 @@ export default class Calendar {
     }
 
     return filteredMeetings;
-  }
-
-  setRights(chosenMember) {
-    const memberLoggedIn = this.members.find(
-      (member) => chosenMember === member.name
-    );
-
-    this._name = memberLoggedIn.name;
-    this._rights = memberLoggedIn.rights;
-  }
-
-  renderModal() {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.modalTemplate;
-
-    const element = wrapper.firstElementChild;
-    this.element = element;
-
-    // set first option selected by default in the list
-    const membersDropdownModal = this.element.querySelector(
-      '#membersDropdownModal'
-    );
-    const firstOption = membersDropdownModal.firstElementChild;
-    firstOption.setAttribute('selected', '');
-
-    this.setRights(firstOption.value);
-
-    // init event Listener: choosing member and rights
-    const submitRoleButton = this.element.querySelector('#submitRoleButton');
-    submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
-
-    // filter events by team member
-    membersDropdownModal.addEventListener('change', () => {
-      const chosenMember = membersDropdownModal.value;
-      this.setRights(chosenMember);
-    });
-  }
-
-  get modalTemplate() {
-    return `<div id="test">
-    <div class= "modal-dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Who are You?</h5>
-          </div>
-          <div class="modal-body">
-            <select class='form-select form-select-lg' id='membersDropdownModal'>
-              ${this.membersListModal}
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="submitRoleButton">Confirm</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-  }
-
-  remove() {
-    this.element.remove();
-    this.element = null;
-    document.removeEventListener('click', this.onDefineRights);
-    document.removeEventListener('change', () => {
-      const chosenMember = membersDropdownModal.value;
-      this.setRights(chosenMember);
-    });
   }
 
   destroy() {

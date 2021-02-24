@@ -2,11 +2,20 @@ import members from '../../fixtures-members';
 import meetings from '../../fixtures-meetings';
 
 import { User, Admin } from '../../components/userRoles';
+import LogInModal from '../../components/logIn-modal';
 
 export default class Page {
   element; //html element
   subElements = {}; //selected elements
   components = {}; //imported initialized components
+
+  constructor() {
+    if (JSON.parse(localStorage.getItem('meetingsDB')) === null) {
+      localStorage.setItem('meetingsDB', JSON.stringify(meetings));
+    }
+
+    localStorage.setItem('membersDB', JSON.stringify(members));
+  }
 
   get template() {
     return `
@@ -25,12 +34,40 @@ export default class Page {
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
 
-    this.initComponents();
-
-    this.renderComponents();
+    this.modal();
 
     return this.element;
   }
+
+  modal() {
+    const logInModal = new LogInModal();
+    this.element.querySelector('#calendarPage').innerHTML = logInModal.template;
+
+    const myModal = new bootstrap.Modal(
+      this.element.querySelector('#staticBackdrop'),
+      {}
+    );
+
+    myModal.show();
+
+    const submitRoleButton = this.element.querySelector('#submitRoleButton');
+    submitRoleButton.addEventListener('pointerdown', this.onDefineRights);
+  }
+
+  onDefineRights = () => {
+    // set logged in member as default selected member in calendar dropdown
+    const members = this.element.querySelector('#membersDropdownModal');
+
+    const getRights = members.options[members.selectedIndex].getAttribute(
+      'data-rights'
+    );
+
+    document.querySelector('#staticBackdrop').remove();
+    document.querySelector('.modal-backdrop').remove();
+
+    this.initComponents(getRights);
+    this.renderComponents();
+  };
 
   getSubElements(element) {
     const elements = element.querySelectorAll('[data-element]');
@@ -42,15 +79,14 @@ export default class Page {
     }, {});
   }
 
-  initComponents() {
-    if (JSON.parse(localStorage.getItem('meetingsDB')) === null) {
-      localStorage.setItem('meetingsDB', JSON.stringify(meetings));
+  initComponents(rights) {
+    if (rights === 'admin') {
+      const calendar = new Admin();
+      return (this.components.calendar = calendar);
     }
 
-    localStorage.setItem('membersDB', JSON.stringify(members));
-
     const calendar = new User();
-    this.components.calendar = calendar;
+    return (this.components.calendar = calendar);
   }
 
   renderComponents() {
