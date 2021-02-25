@@ -120,3 +120,14 @@ $border: 2px solid $gray-500;
     }
   }
 }
+
+.calendar__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+
+  button {
+    margin-left: 1rem;
+  }
+}

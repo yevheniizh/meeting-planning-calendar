@@ -37,7 +37,7 @@ export default class Page {
     const getSessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 
     if (getSessionUser) {
-      this.initComponents(getSessionUser);
+      this.initComponents(getSessionUser.rights);
       this.renderComponents();
 
       return this.element;
@@ -67,12 +67,18 @@ export default class Page {
     // set logged in member as default selected member in calendar dropdown
     const getMembers = this.element.querySelector('#membersDropdownModal');
 
+    const getName = getMembers.value;
     const getRights = getMembers.options[getMembers.selectedIndex].getAttribute(
       'data-rights'
     );
 
+    const memberLoggedInData = { name: getName, rights: getRights };
+
     // set session user rights
-    sessionStorage.setItem('memberLoggedIn', JSON.stringify(getRights));
+    sessionStorage.setItem(
+      'memberLoggedIn',
+      JSON.stringify(memberLoggedInData)
+    );
 
     document.querySelector('#staticBackdrop').remove();
     document.querySelector('.modal-backdrop').remove();

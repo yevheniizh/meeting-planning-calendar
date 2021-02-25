@@ -29,6 +29,8 @@ export default class Calendar {
     this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
+    this.sessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
+
     this.render();
   }
 
@@ -63,7 +65,19 @@ export default class Calendar {
       <div class='calendar'>
         ${this.getTableHeader()}
         ${this.getTableBody()}
+        ${this.getTableFooter()}
       </div>`;
+  }
+
+  getTableFooter() {
+    return `<div class='calendar__footer'>
+      <div>
+        You are logged in as ${this.sessionUser.name} (${this.sessionUser.rights})
+      </div>
+      <button type='button' class='btn btn-outline-secondary' id='logOutButton'>
+        Log out
+      </button>
+    </div>`;
   }
 
   getTableHeader() {
@@ -229,6 +243,13 @@ export default class Calendar {
     membersDropdown.addEventListener('change', () => {
       const chosenMember = membersDropdown.value;
       this.filterMeetings(chosenMember);
+    });
+
+    // log out from user session
+    const logOutButton = this.element.querySelector('#logOutButton');
+    logOutButton.addEventListener('click', () => {
+      sessionStorage.clear();
+      window.location.reload();
     });
   }
 
