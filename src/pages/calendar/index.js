@@ -1,4 +1,4 @@
-import members from '../../fixtures-members';
+import { members } from '../../fixtures-members';
 import meetings from '../../fixtures-meetings';
 
 import { User, Admin } from '../../components/userRoles';
@@ -10,10 +10,6 @@ export default class Page {
   components = {}; //imported initialized components
 
   constructor() {
-    if (JSON.parse(localStorage.getItem('meetingsDB')) === null) {
-      localStorage.setItem('meetingsDB', JSON.stringify(meetings));
-    }
-
     localStorage.setItem('membersDB', JSON.stringify(members));
   }
 

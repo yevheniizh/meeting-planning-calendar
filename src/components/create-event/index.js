@@ -7,43 +7,130 @@ export default class CreateEvent {
   end = 18;
   duration = 1;
   days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-  eventData = {}; // fixture data template
 
   constructor() {
-    this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
     this.render();
   }
 
-  onFormSubmit = (event) => {
+  onFormSubmit = async (event) => {
     event.preventDefault();
-    this.setEventData(this.element);
 
-    if (!this.eventData.name.length || !this.eventData.members.length) {
-      this.element.querySelector('#create-event__alert_error').style.display =
+    const chosenDay = this.element.querySelectorAll('[data-day]');
+    const chosenTime = this.element.querySelectorAll('[data-time]');
+    const chosenMembers = this.element.querySelectorAll('[data-member]');
+    const setEventName = this.element.querySelector('[data-name]').value;
+
+    const newEventData = {}; // event data template
+
+    newEventData.id = uuidv4();
+    newEventData.name = escapeHtml(setEventName);
+    newEventData.day = Object.values(chosenDay).find(
+      (item) => item.selected
+    ).value;
+    newEventData.time = Object.values(chosenTime).find(
+      (item) => item.selected
+    ).value;
+    newEventData.members = Object.values(chosenMembers)
+      .filter((item) => item.checked)
+      .reduce((acc, item) => {
+        return [...acc, { id: item.value }];
+      }, []);
+
+    if (!newEventData.name.length || !newEventData.members.length) {
+      this.element.querySelector('.create-event__alert_error').style.display =
         'block';
-    } else {
-      this.element.querySelector('#create-event__alert_error').style.display =
-        'none';
     }
 
-    if (this.eventData.name.length && this.eventData.members.length) {
-      this.element.querySelector('#create-event__alert_success').style.display =
-        'block';
-
-      // add event to storage
-      localStorage.setItem(
-        'meetingsDB',
-        JSON.stringify([...this.meetings, this.eventData])
-      );
-      // meetings.push(this.eventData);
-
-      setTimeout(() => {
-        document.location.href = '/';
-      }, 500);
+    if (newEventData.name.length && newEventData.members.length) {
+      this.checkTimeSlotAvailability(newEventData);
     }
   };
+
+  async checkTimeSlotAvailability(newEventData) {
+    const system = 'yevhenii_zhyrov';
+    const entity = 'events';
+    const getEventsFromServer = await fetch(
+      `http://158.101.166.74:8080/api/data/${system}/${entity}`
+    );
+    const result = await getEventsFromServer.json();
+
+    (await result) === null
+      ? (() => {
+          this.element.querySelector(
+            '.create-event__alert_success'
+          ).style.display = 'block';
+
+          this.sendFormData(newEventData);
+
+          setTimeout(() => {
+            document.location.href = '/';
+          }, 500);
+          console.log('No data');
+        })()
+      : (() => {
+          const isTableCellFull = result.some(
+            (item) =>
+              JSON.parse(item.data).day === newEventData.day &&
+              JSON.parse(item.data).time === newEventData.time
+          );
+
+          console.log(isTableCellFull);
+
+          isTableCellFull
+            ? (() => {
+                this.element.querySelector(
+                  '.create-event__alert_error'
+                ).style.display = 'none';
+
+                this.element.querySelector(
+                  '.create-event__alert_success'
+                ).style.display = 'none';
+
+                this.element.querySelector(
+                  '.create-event__alert_occupied'
+                ).style.display = 'block';
+              })()
+            : (() => {
+                this.element
+                  .querySelectorAll('.alert-warning')
+                  .forEach((item) => (item.style.display = 'none'));
+
+                this.element.querySelector(
+                  '.create-event__alert_success'
+                ).style.display = 'block';
+
+                this.sendFormData(newEventData);
+
+                setTimeout(() => {
+                  document.location.href = '/';
+                }, 500);
+              })();
+        })();
+  }
+
+  async sendFormData(newEventData) {
+    // post event to server
+    const system = 'yevhenii_zhyrov';
+    const entity = 'events';
+
+    const response = await fetch(
+      `http://158.101.166.74:8080/api/data/${system}/${entity}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify({
+          data: JSON.stringify(newEventData),
+        }),
+      }
+    );
+
+    const result = await response.status;
+    console.log(result);
+  }
 
   render() {
     const wrapper = document.createElement('div');
@@ -74,11 +161,14 @@ export default class CreateEvent {
   get template() {
     return `
     <div>
-      <div class="alert alert-warning" role="alert" style='display: none;' id='create-event__alert_error'>
+      <div class="alert alert-warning create-event__alert_error" role="alert" style='display: none;'>
         Please fill out all fields.
       </div>
-      <div class="alert alert-success" role="alert" style='display: none;' id='create-event__alert_success'>
+      <div class="alert alert-success create-event__alert_success" role="alert" style='display: none;'>
         New event created!
+      </div>
+      <div class="alert alert-warning create-event__alert_occupied" role="alert" style='display: none;'>
+        This time slot is already occupied. Please choose another day or time.
       </div>
       <form>
         <div>
@@ -165,27 +255,6 @@ export default class CreateEvent {
     }
 
     return a.join('');
-  }
-
-  setEventData(element) {
-    const chosenDay = element.querySelectorAll('[data-day]');
-    const chosenTime = element.querySelectorAll('[data-time]');
-    const chosenMembers = element.querySelectorAll('[data-member]');
-    const setEventName = element.querySelector('[data-name]').value;
-
-    this.eventData.id = uuidv4();
-    this.eventData.name = escapeHtml(setEventName);
-    this.eventData.day = Object.values(chosenDay).find(
-      (item) => item.selected
-    ).value;
-    this.eventData.time = Object.values(chosenTime).find(
-      (item) => item.selected
-    ).value;
-    this.eventData.members = Object.values(chosenMembers)
-      .filter((item) => item.checked)
-      .reduce((acc, item) => {
-        return [...acc, { id: item.value }];
-      }, []);
   }
 
   destroy() {

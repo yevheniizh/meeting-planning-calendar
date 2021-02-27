@@ -1,32 +1,40 @@
 export default class Calendar {
   element; //html element
-  subElements = {};
+  subElements = {}; //html element, meetings
   start = 10;
   end = 18;
   duration = 1;
+  meetings = {};
 
-  onRemoveMeetingClick = (event) => {
+  onRemoveMeetingClick = async (event) => {
     const chosenMeeting = event.target.closest('[data-meeting]');
+    const chosenMeetingId = chosenMeeting.dataset.meeting;
     const chosenMeetingName = chosenMeeting.dataset.name;
-
-    // new filtered copy of meetings
-    const newMeeting = JSON.parse(localStorage.getItem('meetingsDB')).filter(
-      (item) => item.id !== chosenMeeting.dataset.meeting
-    );
-
-    localStorage.setItem('meetingsDB', JSON.stringify(newMeeting));
 
     const modal = confirm(
       `Are you sure you want to delete '${chosenMeetingName}' event?`
     );
 
     if (modal) {
+      // chosenMeeting.remove();
+      const system = 'yevhenii_zhyrov';
+      const entity = 'events';
+      const response = await fetch(
+        `http://158.101.166.74:8080/api/data/${system}/${entity}/` +
+          chosenMeetingId,
+        {
+          method: 'DELETE',
+        }
+      );
+
       chosenMeeting.remove();
+
+      const result = await response.status;
+      console.log(result);
     }
   };
 
   constructor() {
-    this.meetings = JSON.parse(localStorage.getItem('meetingsDB'));
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
     this.sessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
@@ -34,14 +42,34 @@ export default class Calendar {
     this.render();
   }
 
-  render() {
+  async getData() {
+    const system = 'yevhenii_zhyrov';
+    const entity = 'events';
+
+    const response = await fetch(
+      `http://158.101.166.74:8080/api/data/${system}/${entity}`
+    );
+
+    const result = await response.json();
+
+    if ((await result) === null) return console.log('No data');
+
+    this.meetings = await result.map((item) => ({
+      id: item.id,
+      data: JSON.parse(item.data),
+    }));
+
+    this.renderMeetings(this.meetings);
+  }
+
+  async render() {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = this.getTable();
 
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    this.renderMeetings(this.meetings);
+    await this.getData();
 
     this.subElements = this.getSubElements(this.element);
 
@@ -50,7 +78,7 @@ export default class Calendar {
     return this.element;
   }
 
-  getSubElements(element) {
+  getSubElements(element = this.element) {
     const elements = element.querySelectorAll('[data-meeting]');
 
     return [...elements].reduce((accum, subElement) => {
@@ -202,26 +230,26 @@ export default class Calendar {
     const arr = [...meetings];
     arr.map((meeting) => {
       const currentColumn = this.element.querySelector(
-        `[data-day='${meeting.day}']`
+        `[data-day='${meeting.data.day}']`
       );
       const currentRow = currentColumn.querySelector(
-        `[data-time='${meeting.time}']`
+        `[data-time='${meeting.data.time}']`
       );
 
       if (this.canDeleteMeetings()) {
         return (currentRow.innerHTML = `
-      <div data-meeting='${meeting.id}' data-name='${meeting.name}' style='visibility: visible'>
+      <div data-meeting='${meeting.id}' data-name='${meeting.data.name}' style='visibility: visible'>
         <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
-          ${meeting.name}
+          ${meeting.data.name}
         </a>
         <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
       </div>`);
       }
 
       return (currentRow.innerHTML = `
-      <div data-meeting='${meeting.id}' data-name='${meeting.name}' style='visibility: visible'>
+      <div data-meeting='${meeting.id}' data-name='${meeting.data.name}' style='visibility: visible'>
         <div class='calendar__table-column_meeting'>
-          ${meeting.name}
+          ${meeting.data.name}
         </div>
       </div>`);
     });
@@ -229,7 +257,6 @@ export default class Calendar {
 
   initEventListeners() {
     // remove event from calendar
-
     if (this.canDeleteMeetings()) {
       const deleteButton = this.element.querySelectorAll('[data-delete]');
       for (let button of deleteButton) {
@@ -239,7 +266,6 @@ export default class Calendar {
 
     // filter events by team member
     const membersDropdown = this.element.querySelector('#membersDropdown');
-
     membersDropdown.addEventListener('change', () => {
       const chosenMember = membersDropdown.value;
       this.filterMeetings(chosenMember);
@@ -269,8 +295,8 @@ export default class Calendar {
 
     // get all meetings that must be disabled
     const filteredMeetings = meetings
-      .filter(({ members }) =>
-        members.every(({ id }) => id !== idOfChosenMember)
+      .filter((meeting) =>
+        meeting.data.members.every((member) => member.id !== idOfChosenMember)
       )
       .map((item) => item.id);
 
