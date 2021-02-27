@@ -19,17 +19,21 @@ export default class Calendar {
     );
 
     if (modal) {
-      const response = await fetch(
-        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/` + chosenMeetingId,
-        {
-          method: 'DELETE',
-        }
-      );
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/` + chosenMeetingId,
+          {
+            method: 'DELETE',
+          }
+        );
 
-      chosenMeeting.remove();
+        chosenMeeting.remove();
 
-      const result = await response.status;
-      console.log(result);
+        const result = await response.status;
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

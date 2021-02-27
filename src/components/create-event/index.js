@@ -51,77 +51,88 @@ export default class CreateEvent {
   };
 
   async checkTimeSlotAvailability(newEventData) {
-    const getEventsFromServer = await fetch(
-      `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`
-    );
-    const result = await getEventsFromServer.json();
+    try {
+      const getEventsFromServer = await fetch(
+        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`
+      );
+      const result = await getEventsFromServer.json();
 
-    (await result) === null
-      ? (() => {
-          this.element.querySelector(
-            '.create-event__alert_success'
-          ).style.display = 'block';
+      (await result) === null
+        ? (() => {
+            this.element.querySelector(
+              '.create-event__alert_success'
+            ).style.display = 'block';
 
-          this.sendFormData(newEventData);
+            this.sendFormData(newEventData);
 
-          setTimeout(() => {
-            document.location.href = '/';
-          }, 500);
-          console.log('No data');
-        })()
-      : (() => {
-          const isTableCellFull = result.some(
-            (item) =>
-              JSON.parse(item.data).day === newEventData.day &&
-              JSON.parse(item.data).time === newEventData.time
-          );
+            setTimeout(() => {
+              document.location.href = '/';
+            }, 500);
+            console.log('No data');
+          })()
+        : (() => {
+            const isTableCellFull = result.some(
+              (item) =>
+                JSON.parse(item.data).day === newEventData.day &&
+                JSON.parse(item.data).time === newEventData.time
+            );
 
-          isTableCellFull
-            ? (() => {
-                this.element.querySelector(
-                  '.create-event__alert_error'
-                ).style.display = 'none';
+            isTableCellFull
+              ? (() => {
+                  this.element.querySelector(
+                    '.create-event__alert_error'
+                  ).style.display = 'none';
 
-                this.element.querySelector(
-                  '.create-event__alert_success'
-                ).style.display = 'none';
+                  this.element.querySelector(
+                    '.create-event__alert_success'
+                  ).style.display = 'none';
 
-                this.element.querySelector(
-                  '.create-event__alert_occupied'
-                ).style.display = 'block';
-              })()
-            : (() => {
-                this.element
-                  .querySelectorAll('.alert-warning')
-                  .forEach((item) => (item.style.display = 'none'));
+                  this.element.querySelector(
+                    '.create-event__alert_occupied'
+                  ).style.display = 'block';
+                })()
+              : (() => {
+                  this.element
+                    .querySelectorAll('.alert-warning')
+                    .forEach((item) => (item.style.display = 'none'));
 
-                this.element.querySelector(
-                  '.create-event__alert_success'
-                ).style.display = 'block';
+                  this.element.querySelector(
+                    '.create-event__alert_success'
+                  ).style.display = 'block';
 
-                this.sendFormData(newEventData);
+                  this.sendFormData(newEventData);
 
-                setTimeout(() => {
-                  document.location.href = '/';
-                }, 500);
-              })();
-        })();
+                  setTimeout(() => {
+                    document.location.href = '/';
+                  }, 500);
+                })();
+          })();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async sendFormData(newEventData) {
     // post event to server
-    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        data: JSON.stringify(newEventData),
-      }),
-    });
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+          },
+          body: JSON.stringify({
+            data: JSON.stringify(newEventData),
+          }),
+        }
+      );
 
-    const result = await response.status;
-    console.log(result);
+      const result = await response.status;
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {

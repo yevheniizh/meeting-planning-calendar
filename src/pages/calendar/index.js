@@ -24,29 +24,37 @@ export default class Page {
   }
 
   async getUsers() {
-    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
+    try {
+      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if ((await result) === null) return console.log('No users');
+      if ((await result) === null) return console.log('No users');
 
-    this.users = await result.map((item) => ({
-      id: item.id,
-      data: JSON.parse(item.data),
-    }));
+      this.users = await result.map((item) => ({
+        id: item.id,
+        data: JSON.parse(item.data),
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getData() {
-    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
+    try {
+      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if ((await result) === null) return console.log('No data');
+      if ((await result) === null) return console.log('No data');
 
-    this.meetings = await result.map((item) => ({
-      id: item.id,
-      data: JSON.parse(item.data),
-    }));
+      this.meetings = await result.map((item) => ({
+        id: item.id,
+        data: JSON.parse(item.data),
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async render() {
@@ -75,9 +83,8 @@ export default class Page {
 
   // async sendUsersToServer() {
   //   // post users to server
-  //   const response = await fetch(
-  //     `${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`,
-  //     {
+  //   try {
+  //     const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`, {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json;charset=utf-8',
@@ -85,11 +92,13 @@ export default class Page {
   //       body: JSON.stringify({
   //         data: JSON.stringify(membersTemplate[0]),
   //       }),
-  //     }
-  //   );
+  //     });
 
-  //   const result = await response.status;
-  //   console.log(result);
+  //     const result = await response.status;
+  //     console.log(result);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
   // }
 
   modal() {

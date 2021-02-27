@@ -19,19 +19,20 @@ export default class Page {
   }
 
   async getUsers() {
-    const system = 'yevhenii_zhyrov';
-    const users = 'users';
+    try {
+      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
 
-    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
+      const result = await response.json();
 
-    const result = await response.json();
+      if ((await result) === null) return console.log('No users');
 
-    if ((await result) === null) return console.log('No users');
-
-    this.users = await result.map((item) => ({
-      id: item.id,
-      data: JSON.parse(item.data),
-    }));
+      this.users = await result.map((item) => ({
+        id: item.id,
+        data: JSON.parse(item.data),
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async render() {
