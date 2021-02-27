@@ -1,5 +1,4 @@
 import { members } from '../../fixtures-members';
-import meetings from '../../fixtures-meetings';
 
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
@@ -43,6 +42,28 @@ export default class Page {
 
     return this.element;
   }
+
+  // async sendUsersToServer() {
+  //   // post users to server
+  //   const system = 'yevhenii_zhyrov';
+  //   const users = 'users';
+
+  //   const response = await fetch(
+  //     `http://158.101.166.74:8080/api/data/${system}/${users}`,
+  //     {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json;charset=utf-8',
+  //       },
+  //       body: JSON.stringify({
+  //         data: JSON.stringify(membersTemplate[0]),
+  //       }),
+  //     }
+  //   );
+
+  //   const result = await response.status;
+  //   console.log(result);
+  // }
 
   modal() {
     const logInModal = new LogInModal();
