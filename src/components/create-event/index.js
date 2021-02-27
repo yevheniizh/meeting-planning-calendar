@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import escapeHtml from '../../utils/escape-html.js';
 
 export default class CreateEvent {
@@ -8,8 +8,8 @@ export default class CreateEvent {
   duration = 1;
   days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
-  constructor() {
-    this.members = JSON.parse(localStorage.getItem('membersDB'));
+  constructor(users) {
+    this.members = users;
 
     this.render();
   }
@@ -24,7 +24,7 @@ export default class CreateEvent {
 
     const newEventData = {}; // event data template
 
-    newEventData.id = uuidv4();
+    // newEventData.id = uuidv4();
     newEventData.name = escapeHtml(setEventName);
     newEventData.day = Object.values(chosenDay).find(
       (item) => item.selected
@@ -75,8 +75,6 @@ export default class CreateEvent {
               JSON.parse(item.data).day === newEventData.day &&
               JSON.parse(item.data).time === newEventData.time
           );
-
-          console.log(isTableCellFull);
 
           isTableCellFull
             ? (() => {
@@ -218,7 +216,7 @@ export default class CreateEvent {
           return `
           <div class="form-check">
             <input class="form-check-input" class="member" type="checkbox" data-member=${member.id} value=${member.id}>
-            <label class="form-check-label">${member.name}</label>
+            <label class="form-check-label">${member.data.name}</label>
           </div>`;
         })
         .join('')}

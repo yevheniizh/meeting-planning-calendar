@@ -1,8 +1,8 @@
 import Calendar from '../calendar';
 
 export class User extends Calendar {
-  constructor() {
-    super();
+  constructor(meetings, users) {
+    super(meetings, users);
   }
 
   canDeleteMeetings() {
@@ -15,8 +15,8 @@ export class User extends Calendar {
 }
 
 export class Admin extends User {
-  constructor() {
-    super();
+  constructor(meetings, users) {
+    super(meetings, users);
   }
 
   canDeleteMeetings() {

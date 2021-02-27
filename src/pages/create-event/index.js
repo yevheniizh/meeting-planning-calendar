@@ -4,6 +4,7 @@ export default class Page {
   element; //html element
   subElements = {}; //selected elements
   components = {}; //imported initialized components
+  users = {};
 
   get template() {
     return `<div>
@@ -13,12 +14,32 @@ export default class Page {
     </div>`;
   }
 
-  render() {
+  async getUsers() {
+    const system = 'yevhenii_zhyrov';
+    const users = 'users';
+
+    const response = await fetch(
+      `http://158.101.166.74:8080/api/data/${system}/${users}`
+    );
+
+    const result = await response.json();
+
+    if ((await result) === null) return console.log('No users');
+
+    this.users = await result.map((item) => ({
+      id: item.id,
+      data: JSON.parse(item.data),
+    }));
+  }
+
+  async render() {
     const element = document.createElement('div');
     element.innerHTML = this.template;
 
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
+
+    await this.getUsers();
 
     this.initComponents();
 
@@ -38,7 +59,7 @@ export default class Page {
   }
 
   initComponents() {
-    const createEvent = new CreateEvent();
+    const createEvent = new CreateEvent(this.users);
     this.components.createEvent = createEvent;
   }
 

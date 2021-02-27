@@ -4,7 +4,6 @@ export default class Calendar {
   start = 10;
   end = 18;
   duration = 1;
-  meetings = {};
 
   onRemoveMeetingClick = async (event) => {
     const chosenMeeting = event.target.closest('[data-meeting]');
@@ -16,7 +15,6 @@ export default class Calendar {
     );
 
     if (modal) {
-      // chosenMeeting.remove();
       const system = 'yevhenii_zhyrov';
       const entity = 'events';
       const response = await fetch(
@@ -34,32 +32,15 @@ export default class Calendar {
     }
   };
 
-  constructor() {
+  constructor(meetings, users) {
+    this.meetings = meetings;
+    this.users = users;
+
     this.members = JSON.parse(localStorage.getItem('membersDB'));
 
     this.sessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 
     this.render();
-  }
-
-  async getData() {
-    const system = 'yevhenii_zhyrov';
-    const entity = 'events';
-
-    const response = await fetch(
-      `http://158.101.166.74:8080/api/data/${system}/${entity}`
-    );
-
-    const result = await response.json();
-
-    if ((await result) === null) return console.log('No data');
-
-    this.meetings = await result.map((item) => ({
-      id: item.id,
-      data: JSON.parse(item.data),
-    }));
-
-    this.renderMeetings(this.meetings);
   }
 
   async render() {
@@ -69,7 +50,7 @@ export default class Calendar {
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    await this.getData();
+    await this.renderMeetings(this.meetings);
 
     this.subElements = this.getSubElements(this.element);
 
@@ -133,9 +114,9 @@ export default class Calendar {
   }
 
   get membersList() {
-    return this.members
-      .map((member) => {
-        return `<option value='${member.name}' data-member='${member.name}'>${member.name}</option>`;
+    return this.users
+      .map((user) => {
+        return `<option value='${user.data.name}' data-member='${user.data.name}'>${user.data.name}</option>`;
       })
       .join('');
   }
@@ -289,9 +270,10 @@ export default class Calendar {
     }
 
     const meetings = [...this.meetings];
-    const members = [...this.members];
-    const idOfChosenMember = members.find(({ name }) => name === chosenMember)
-      .id;
+    const users = [...this.users];
+    const idOfChosenMember = users.find(
+      ({ data }) => data.name === chosenMember
+    ).id;
 
     // get all meetings that must be disabled
     const filteredMeetings = meetings

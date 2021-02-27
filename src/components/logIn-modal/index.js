@@ -1,6 +1,6 @@
 export default class LogInModal {
-  constructor() {
-    this.members = JSON.parse(localStorage.getItem('membersDB'));
+  constructor(users) {
+    this.members = users;
   }
 
   get template() {
@@ -16,7 +16,7 @@ export default class LogInModal {
               <select class='form-select form-select-lg' id='membersDropdownModal'>
                 ${this.members
                   .map((member) => {
-                    return `<option value='${member.name}' data-rights='${member.rights}'>${member.name} (${member.rights})</option>`;
+                    return `<option value='${member.data.name}' data-rights='${member.data.rights}'>${member.data.name} (${member.data.rights})</option>`;
                   })
                   .join('')}
               </select>
