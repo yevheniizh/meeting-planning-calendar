@@ -1,6 +1,11 @@
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
 
+const BACKEND_URL = process.env.BACKEND_URL;
+const SYSTEM = process.env.SYSTEM;
+const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
+const ENTITY_USERS = process.env.ENTITY_USERS;
+
 export default class Page {
   element; //html element
   subElements = {}; //selected elements
@@ -19,12 +24,7 @@ export default class Page {
   }
 
   async getUsers() {
-    const system = 'yevhenii_zhyrov';
-    const users = 'users';
-
-    const response = await fetch(
-      `http://158.101.166.74:8080/api/data/${system}/${users}`
-    );
+    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
 
     const result = await response.json();
 
@@ -37,12 +37,7 @@ export default class Page {
   }
 
   async getData() {
-    const system = 'yevhenii_zhyrov';
-    const entity = 'events';
-
-    const response = await fetch(
-      `http://158.101.166.74:8080/api/data/${system}/${entity}`
-    );
+    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
 
     const result = await response.json();
 
@@ -80,11 +75,8 @@ export default class Page {
 
   // async sendUsersToServer() {
   //   // post users to server
-  //   const system = 'yevhenii_zhyrov';
-  //   const users = 'users';
-
   //   const response = await fetch(
-  //     `http://158.101.166.74:8080/api/data/${system}/${users}`,
+  //     `${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`,
   //     {
   //       method: 'POST',
   //       headers: {

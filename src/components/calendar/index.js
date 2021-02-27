@@ -1,3 +1,7 @@
+const BACKEND_URL = process.env.BACKEND_URL;
+const SYSTEM = process.env.SYSTEM;
+const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
+
 export default class Calendar {
   element; //html element
   subElements = {}; //html element, meetings
@@ -15,11 +19,8 @@ export default class Calendar {
     );
 
     if (modal) {
-      const system = 'yevhenii_zhyrov';
-      const entity = 'events';
       const response = await fetch(
-        `http://158.101.166.74:8080/api/data/${system}/${entity}/` +
-          chosenMeetingId,
+        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/` + chosenMeetingId,
         {
           method: 'DELETE',
         }

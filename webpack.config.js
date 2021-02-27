@@ -1,4 +1,7 @@
+require('dotenv/config');
+
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -39,6 +42,13 @@ module.exports = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL || ''),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.SYSTEM': JSON.stringify(process.env.SYSTEM),
+      'process.env.ENTITY_EVENTS': JSON.stringify(process.env.ENTITY_EVENTS),
+      'process.env.ENTITY_USERS': JSON.stringify(process.env.ENTITY_USERS),
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, './src/index.html'),
       filename: 'index.html',

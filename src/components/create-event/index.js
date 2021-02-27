@@ -1,5 +1,8 @@
-// import { v4 as uuidv4 } from 'uuid';
 import escapeHtml from '../../utils/escape-html.js';
+
+const BACKEND_URL = process.env.BACKEND_URL;
+const SYSTEM = process.env.SYSTEM;
+const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
 
 export default class CreateEvent {
   element; //html element
@@ -24,7 +27,6 @@ export default class CreateEvent {
 
     const newEventData = {}; // event data template
 
-    // newEventData.id = uuidv4();
     newEventData.name = escapeHtml(setEventName);
     newEventData.day = Object.values(chosenDay).find(
       (item) => item.selected
@@ -49,10 +51,8 @@ export default class CreateEvent {
   };
 
   async checkTimeSlotAvailability(newEventData) {
-    const system = 'yevhenii_zhyrov';
-    const entity = 'events';
     const getEventsFromServer = await fetch(
-      `http://158.101.166.74:8080/api/data/${system}/${entity}`
+      `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`
     );
     const result = await getEventsFromServer.json();
 
@@ -110,21 +110,15 @@ export default class CreateEvent {
 
   async sendFormData(newEventData) {
     // post event to server
-    const system = 'yevhenii_zhyrov';
-    const entity = 'events';
-
-    const response = await fetch(
-      `http://158.101.166.74:8080/api/data/${system}/${entity}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify({
-          data: JSON.stringify(newEventData),
-        }),
-      }
-    );
+    const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({
+        data: JSON.stringify(newEventData),
+      }),
+    });
 
     const result = await response.status;
     console.log(result);
