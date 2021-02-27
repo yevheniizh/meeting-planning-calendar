@@ -50,7 +50,7 @@ export default class Calendar {
     const element = wrapper.firstElementChild;
     this.element = element;
 
-    await this.renderMeetings(this.meetings);
+    if (this.meetings.length) this.renderMeetings(this.meetings);
 
     this.subElements = this.getSubElements(this.element);
 
