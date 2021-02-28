@@ -131,3 +131,18 @@ $border: 2px solid $gray-500;
     margin-left: 1rem;
   }
 }
+
+.calendar__toast_succesful {
+  color: white;
+  background: $green-400;
+}
+
+.calendar__toast_warning {
+  color: black;
+  background: $yellow-300;
+}
+
+.calendar__toast_error {
+  color: white;
+  background: $red-400;
+}

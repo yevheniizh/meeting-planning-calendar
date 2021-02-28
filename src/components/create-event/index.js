@@ -41,8 +41,7 @@ export default class CreateEvent {
       }, []);
 
     if (!newEventData.name.length || !newEventData.members.length) {
-      this.element.querySelector('.create-event__alert_error').style.display =
-        'block';
+      this.showToast('Please fill out all fields', 'warning');
     }
 
     if (newEventData.name.length && newEventData.members.length) {
@@ -52,61 +51,52 @@ export default class CreateEvent {
 
   async checkTimeSlotAvailability(newEventData) {
     try {
-      const getEventsFromServer = await fetch(
-        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`
-      );
-      const result = await getEventsFromServer.json();
+      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
 
-      (await result) === null
-        ? (() => {
-            this.element.querySelector(
-              '.create-event__alert_success'
-            ).style.display = 'block';
+      if (!response.ok) {
+        try {
+          const result = await response.statusText;
+          return this.showToast(`API: ${result}`, (status = 'error'));
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-            this.sendFormData(newEventData);
+      try {
+        const result = await response.json();
 
-            setTimeout(() => {
-              document.location.href = '/';
-            }, 500);
-            console.log('No data');
-          })()
-        : (() => {
-            const isTableCellFull = result.some(
-              (item) =>
-                JSON.parse(item.data).day === newEventData.day &&
-                JSON.parse(item.data).time === newEventData.time
-            );
+        (await result) === null
+          ? (() => {
+              this.sendFormData(newEventData);
 
-            isTableCellFull
-              ? (() => {
-                  this.element.querySelector(
-                    '.create-event__alert_error'
-                  ).style.display = 'none';
+              setTimeout(() => {
+                document.location.href = '/';
+              }, 500);
+              console.log('No data');
+            })()
+          : (() => {
+              const isTableCellFull = result.some(
+                (item) =>
+                  JSON.parse(item.data).day === newEventData.day &&
+                  JSON.parse(item.data).time === newEventData.time
+              );
 
-                  this.element.querySelector(
-                    '.create-event__alert_success'
-                  ).style.display = 'none';
+              isTableCellFull
+                ? this.showToast(
+                    'API: This time slot is already occupied. Please choose another day or time.',
+                    'warning'
+                  )
+                : (() => {
+                    this.sendFormData(newEventData);
 
-                  this.element.querySelector(
-                    '.create-event__alert_occupied'
-                  ).style.display = 'block';
-                })()
-              : (() => {
-                  this.element
-                    .querySelectorAll('.alert-warning')
-                    .forEach((item) => (item.style.display = 'none'));
-
-                  this.element.querySelector(
-                    '.create-event__alert_success'
-                  ).style.display = 'block';
-
-                  this.sendFormData(newEventData);
-
-                  setTimeout(() => {
-                    document.location.href = '/';
-                  }, 500);
-                })();
-          })();
+                    setTimeout(() => {
+                      document.location.href = '/';
+                    }, 2000);
+                  })();
+            })();
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -128,8 +118,23 @@ export default class CreateEvent {
         }
       );
 
-      const result = await response.status;
-      console.log(result);
+      if (!response.ok) {
+        try {
+          const result = await response.statusText;
+          return this.showToast(`API: ${result}`, (status = 'error'));
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      try {
+        const result = await response.status;
+        console.log(result);
+
+        this.showToast('API: event posted succesfully', 'succesful');
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -164,15 +169,6 @@ export default class CreateEvent {
   get template() {
     return `
     <div>
-      <div class="alert alert-warning create-event__alert_error" role="alert" style='display: none;'>
-        Please fill out all fields.
-      </div>
-      <div class="alert alert-success create-event__alert_success" role="alert" style='display: none;'>
-        New event created!
-      </div>
-      <div class="alert alert-warning create-event__alert_occupied" role="alert" style='display: none;'>
-        This time slot is already occupied. Please choose another day or time.
-      </div>
       <form>
         <div>
           <span>Name of the event</span>
@@ -206,6 +202,11 @@ export default class CreateEvent {
           <button type="submit" class="btn btn-primary">Create</button>
         </div>
       </form>
+      <div aria-live="polite" aria-atomic="true" class="position-relative">
+          <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+          </div>
+        </div>
     </div>`;
   }
 
@@ -258,6 +259,40 @@ export default class CreateEvent {
     }
 
     return a.join('');
+  }
+
+  showToast(message = 'API response: succesful', status) {
+    const toastTemplate = `
+    <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+      </div>
+    </div>`;
+
+    const toastContainer = this.element.querySelector('.toast-container');
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = toastTemplate;
+    const element = wrapper.firstElementChild;
+
+    toastContainer.appendChild(element);
+
+    const toast = toastContainer.lastElementChild;
+
+    const toastDelay = 2000;
+    const toastRender = new bootstrap.Toast(toast, {
+      animation: true,
+      autohide: true,
+      delay: toastDelay,
+    });
+
+    toastRender.show();
+
+    setTimeout(() => {
+      toastContainer.firstElementChild.remove();
+    }, toastDelay);
   }
 
   destroy() {

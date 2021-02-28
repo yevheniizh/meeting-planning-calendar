@@ -19,6 +19,11 @@ export default class Page {
         <div data-element="calendar" id="calendarPage">
           <!-- Calendar component -->
         </div>
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+          <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+          </div>
+        </div>
       </div>
     `;
   }
@@ -27,14 +32,28 @@ export default class Page {
     try {
       const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
 
-      const result = await response.json();
+      if (!response.ok) {
+        try {
+          const result = await response.statusText;
+          return this.showToast(`API: ${result}`, 'error');
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-      if ((await result) === null) return console.log('No users');
+      try {
+        const result = await response.json();
 
-      this.users = await result.map((item) => ({
-        id: item.id,
-        data: JSON.parse(item.data),
-      }));
+        if ((await result) === null)
+          return this.showToast(`API: no users`, 'succesful');
+
+        this.users = await result.map((item) => ({
+          id: item.id,
+          data: JSON.parse(item.data),
+        }));
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -44,14 +63,28 @@ export default class Page {
     try {
       const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
 
-      const result = await response.json();
+      if (!response.ok) {
+        try {
+          const result = await response.statusText;
+          return this.showToast(`API: ${result}`, 'error');
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-      if ((await result) === null) return console.log('No data');
+      try {
+        const result = await response.json();
 
-      this.meetings = await result.map((item) => ({
-        id: item.id,
-        data: JSON.parse(item.data),
-      }));
+        if ((await result) === null)
+          return this.showToast(`API: no events`, 'warning');
+
+        this.meetings = await result.map((item) => ({
+          id: item.id,
+          data: JSON.parse(item.data),
+        }));
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -167,6 +200,40 @@ export default class Page {
 
       root.append(element);
     });
+  }
+
+  showToast(message = 'API response: succesful', status) {
+    const toastTemplate = `
+    <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+      </div>
+    </div>`;
+
+    const toastContainer = this.element.querySelector('.toast-container');
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = toastTemplate;
+    const element = wrapper.firstElementChild;
+
+    toastContainer.appendChild(element);
+
+    const toast = toastContainer.lastElementChild;
+
+    const toastDelay = 2000;
+    const toastRender = new bootstrap.Toast(toast, {
+      animation: true,
+      autohide: true,
+      delay: toastDelay,
+    });
+
+    toastRender.show();
+
+    setTimeout(() => {
+      toastContainer.firstElementChild.remove();
+    }, toastDelay);
   }
 
   destroy() {
