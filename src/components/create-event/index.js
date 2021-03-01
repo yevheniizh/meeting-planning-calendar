@@ -1,4 +1,5 @@
 import escapeHtml from '../../utils/escape-html.js';
+import showToast from '../notification';
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const SYSTEM = process.env.SYSTEM;
@@ -41,7 +42,7 @@ export default class CreateEvent {
       }, []);
 
     if (!newEventData.name.length || !newEventData.members.length) {
-      this.showToast('Please fill out all fields', 'warning');
+      showToast('Please fill out all fields', 'warning');
     }
 
     if (newEventData.name.length && newEventData.members.length) {
@@ -56,7 +57,7 @@ export default class CreateEvent {
       if (!response.ok) {
         try {
           const result = await response.statusText;
-          return this.showToast(`API: ${result}`, (status = 'error'));
+          return showToast(`API: ${result}`, (status = 'error'));
         } catch (error) {
           console.log(error);
         }
@@ -82,7 +83,7 @@ export default class CreateEvent {
               );
 
               isTableCellFull
-                ? this.showToast(
+                ? showToast(
                     'API: This time slot is already occupied. Please choose another day or time.',
                     'warning'
                   )
@@ -121,7 +122,7 @@ export default class CreateEvent {
       if (!response.ok) {
         try {
           const result = await response.statusText;
-          return this.showToast(`API: ${result}`, (status = 'error'));
+          return showToast(`API: ${result}`, (status = 'error'));
         } catch (error) {
           console.log(error);
         }
@@ -131,7 +132,7 @@ export default class CreateEvent {
         const result = await response.status;
         console.log(result);
 
-        this.showToast('API: event posted succesfully', 'succesful');
+        showToast('API: event posted succesfully', 'succesful');
       } catch (error) {
         console.log(error);
       }
@@ -261,39 +262,39 @@ export default class CreateEvent {
     return a.join('');
   }
 
-  showToast(message = 'API response: succesful', status) {
-    const toastTemplate = `
-    <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          ${message}
-        </div>
-      </div>
-    </div>`;
+  // showToast(message = 'API response: succesful', status) {
+  //   const toastTemplate = `
+  //   <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+  //     <div class="d-flex">
+  //       <div class="toast-body">
+  //         ${message}
+  //       </div>
+  //     </div>
+  //   </div>`;
 
-    const toastContainer = this.element.querySelector('.toast-container');
+  //   const toastContainer = this.element.querySelector('.toast-container');
 
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = toastTemplate;
-    const element = wrapper.firstElementChild;
+  //   const wrapper = document.createElement('div');
+  //   wrapper.innerHTML = toastTemplate;
+  //   const element = wrapper.firstElementChild;
 
-    toastContainer.appendChild(element);
+  //   toastContainer.appendChild(element);
 
-    const toast = toastContainer.lastElementChild;
+  //   const toast = toastContainer.lastElementChild;
 
-    const toastDelay = 2000;
-    const toastRender = new bootstrap.Toast(toast, {
-      animation: true,
-      autohide: true,
-      delay: toastDelay,
-    });
+  //   const toastDelay = 2000;
+  //   const toastRender = new bootstrap.Toast(toast, {
+  //     animation: true,
+  //     autohide: true,
+  //     delay: toastDelay,
+  //   });
 
-    toastRender.show();
+  //   toastRender.show();
 
-    setTimeout(() => {
-      toastContainer.firstElementChild.remove();
-    }, toastDelay);
-  }
+  //   setTimeout(() => {
+  //     toastContainer.firstElementChild.remove();
+  //   }, toastDelay);
+  // }
 
   destroy() {
     this.element.remove();

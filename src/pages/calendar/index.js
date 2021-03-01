@@ -1,5 +1,6 @@
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
+import showToast from '../../components/notification';
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const SYSTEM = process.env.SYSTEM;
@@ -35,7 +36,7 @@ export default class Page {
       if (!response.ok) {
         try {
           const result = await response.statusText;
-          return this.showToast(`API: ${result}`, 'error');
+          return showToast(`API: ${result}`, 'error');
         } catch (error) {
           console.log(error);
         }
@@ -45,12 +46,17 @@ export default class Page {
         const result = await response.json();
 
         if ((await result) === null)
-          return this.showToast(`API: no users`, 'succesful');
+          return showToast('API: no users', 'succesful');
 
         this.users = await result.map((item) => ({
           id: item.id,
           data: JSON.parse(item.data),
         }));
+
+        setTimeout(
+          () => showToast('API: users downloaded succesfully', 'succesful'),
+          100
+        );
       } catch (error) {
         console.log(error);
       }
@@ -66,7 +72,7 @@ export default class Page {
       if (!response.ok) {
         try {
           const result = await response.statusText;
-          return this.showToast(`API: ${result}`, 'error');
+          return showToast(`API: ${result}`, 'error');
         } catch (error) {
           console.log(error);
         }
@@ -76,12 +82,17 @@ export default class Page {
         const result = await response.json();
 
         if ((await result) === null)
-          return this.showToast(`API: no events`, 'warning');
+          return showToast('API: no events', 'warning');
 
         this.meetings = await result.map((item) => ({
           id: item.id,
           data: JSON.parse(item.data),
         }));
+
+        setTimeout(
+          () => showToast('API: data downloaded succesfully', 'succesful'),
+          100
+        );
       } catch (error) {
         console.log(error);
       }
@@ -200,40 +211,6 @@ export default class Page {
 
       root.append(element);
     });
-  }
-
-  showToast(message = 'API response: succesful', status) {
-    const toastTemplate = `
-    <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          ${message}
-        </div>
-      </div>
-    </div>`;
-
-    const toastContainer = this.element.querySelector('.toast-container');
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = toastTemplate;
-    const element = wrapper.firstElementChild;
-
-    toastContainer.appendChild(element);
-
-    const toast = toastContainer.lastElementChild;
-
-    const toastDelay = 2000;
-    const toastRender = new bootstrap.Toast(toast, {
-      animation: true,
-      autohide: true,
-      delay: toastDelay,
-    });
-
-    toastRender.show();
-
-    setTimeout(() => {
-      toastContainer.firstElementChild.remove();
-    }, toastDelay);
   }
 
   destroy() {

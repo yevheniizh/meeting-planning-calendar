@@ -1,3 +1,5 @@
+import showToast from '../notification';
+
 const BACKEND_URL = process.env.BACKEND_URL;
 const SYSTEM = process.env.SYSTEM;
 const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
@@ -30,7 +32,7 @@ export default class Calendar {
         if (!response.ok) {
           try {
             const result = await response.statusText;
-            return this.showToast(`API: ${result}`, (status = 'error'));
+            return showToast(`API: ${result}`, 'error');
           } catch (error) {
             console.log(error);
           }
@@ -40,7 +42,7 @@ export default class Calendar {
           const result = await response.status;
           console.log(result);
 
-          this.showToast('API: event deleted succesfully', 'succesful');
+          showToast('API: event deleted succesfully', 'succesful');
 
           chosenMeeting.remove();
         } catch (error) {
@@ -287,7 +289,7 @@ export default class Calendar {
 
   filterMeetings(chosenMember) {
     if (!this.meetings.length)
-      return this.showToast('No events to filter', 'warning');
+      return showToast('No events to filter', 'warning');
 
     if (chosenMember === 'All members') {
       for (let item of Object.keys(this.subElements)) {
@@ -322,43 +324,7 @@ export default class Calendar {
       }
     }
 
-    this.showToast('Filtered', 'succesful');
-
     return filteredMeetings;
-  }
-
-  showToast(message = 'API response: succesful', status) {
-    const toastTemplate = `
-    <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          ${message}
-        </div>
-      </div>
-    </div>`;
-
-    const toastContainer = this.element.querySelector('.toast-container');
-
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = toastTemplate;
-    const element = wrapper.firstElementChild;
-
-    toastContainer.appendChild(element);
-
-    const toast = toastContainer.lastElementChild;
-
-    const toastDelay = 2000;
-    const toastRender = new bootstrap.Toast(toast, {
-      animation: true,
-      autohide: true,
-      delay: toastDelay,
-    });
-
-    toastRender.show();
-
-    setTimeout(() => {
-      toastContainer.firstElementChild.remove();
-    }, toastDelay);
   }
 
   destroy() {

@@ -1,4 +1,5 @@
 import CreateEvent from '../../components/create-event/index.js';
+import showToast from '../../components/notification';
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const SYSTEM = process.env.SYSTEM;
@@ -25,7 +26,7 @@ export default class Page {
       if (!response.ok) {
         try {
           const result = await response.statusText;
-          return console.log(result);
+          return showToast(`API: ${result}`, 'error');
         } catch (error) {
           console.log(error);
         }
@@ -34,12 +35,18 @@ export default class Page {
       try {
         const result = await response.json();
 
-        if ((await result) === null) return console.log('No users');
+        if ((await result) === null)
+          return showToast(`API: no users`, 'succesful');
 
         this.users = await result.map((item) => ({
           id: item.id,
           data: JSON.parse(item.data),
         }));
+
+        setTimeout(
+          () => showToast('API: users downloaded succesfully', 'succesful'),
+          100
+        );
       } catch (error) {
         console.log(error);
       }
