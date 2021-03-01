@@ -1,0 +1,75 @@
+.create-event__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: auto;
+  overflow: hidden;
+  font-size: 1rem;
+
+  .create-event__form-element {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 50%;
+
+    .create-event__form-description {
+      width: auto;
+    }
+
+    .create-event__form-input {
+      margin-left: auto;
+      height: 3rem;
+      width: 60%;
+      font-size: 1.25rem;
+
+      select,
+      input {
+        font-size: 1.25rem;
+        border: 2px solid $dark;
+        box-shadow: none;
+        border-radius: 10px;
+      }
+    }
+
+    .create-event__form-input_multiselect {
+      margin-left: auto;
+      width: 60%;
+      height: 4.5rem;
+      border-radius: 10px;
+      overflow: scroll;
+      border: 2px solid $dark;
+      box-shadow: none;
+      padding: 5px;
+    }
+  }
+
+  .create-event__buttons-container {
+    display: flex;
+    justify-content: end;
+    width: 50%;
+    margin-left: auto;
+
+    a {
+      height: 100%;
+      width: 100%;
+      margin-right: 20px;
+    }
+
+    .create-event__button {
+      border-radius: 10px;
+      height: 100%;
+      width: 100%;
+      font-size: 1.25rem;
+      border: 2px solid $dark;
+      box-shadow: none;
+    }
+
+    & button {
+      background-color: $gray-300;
+
+      &:hover {
+        background-color: $gray-500;
+      }
+    }
+  }
+}

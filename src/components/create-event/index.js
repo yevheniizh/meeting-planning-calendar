@@ -170,37 +170,48 @@ export default class CreateEvent {
   get template() {
     return `
     <div>
-      <form>
-        <div>
-          <span>Name of the event</span>
-          <input
-            placeholder='Type here'
-            type='search'
-            class='form-control rounded'
-            data-name='name'
-          />
+      <form class='create-event__form'>
+        <div class='create-event__form-element'>
+          <div class='create-event__form-description'>
+            Name of the event:
+          </div>
+          <div class='create-event__form-input'>
+            <input
+              placeholder='Type here'
+              type='search'
+              class='form-control'
+              data-name='name'
+            />
+          </div>
         </div>
 
-        <div>
-          <span>Participants</span>
+        <div class='create-event__form-element'>
+          <div class='create-event__form-description'>
+            Participants:
+          </div>
           ${this.getMembersDropdown()}
         </div>
 
-        <div>
-          <span>Day</span>
+        <div class='create-event__form-element'>
+          <div class='create-event__form-description'>
+            Day:
+          </div>
           ${this.getDaysDropdown()}
         </div>
-        <div>
-          <span>Time</span>
+
+        <div class='create-event__form-element'>
+          <div class='create-event__form-description'>
+            Time:
+          </div>
           ${this.getEventHoursDropdown()}
         </div>
 
-        <div>
+        <div class='create-event__buttons-container'>
           <a href='/'>
-            <button type="button" class="btn btn-secondary">Cancel</button>
+            <button type="button" class="btn btn-outline-dark create-event__button">Cancel</button>
           </a>
 
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn btn-outline-dark create-event__button">Create</button>
         </div>
       </form>
     </div>`;
@@ -208,7 +219,7 @@ export default class CreateEvent {
 
   getMembersDropdown() {
     return `
-    <div style='height:2.5rem; overflow: scroll; border: 1px solid black'>
+    <div class='create-event__form-input_multiselect'>
       <div class="form-check">
         <input class="form-check-input"type="checkbox" id='allMembersCheckbox' value='All members'>
         <label class="form-check-label" for="allMembersCheckbox">All members</label>
@@ -227,7 +238,7 @@ export default class CreateEvent {
 
   getDaysDropdown() {
     return `
-    <div>
+    <div class='create-event__form-input'>
       <select class='form-select form-select-lg'>
         ${this.days
           .map((day) => {
@@ -240,7 +251,7 @@ export default class CreateEvent {
 
   getEventHoursDropdown() {
     return `
-    <div class='calendar__header_handling-dropdown'>
+    <div class='create-event__form-input'>
       <select class='form-select form-select-lg'>
         ${this.getEventHours()}
       </select>
