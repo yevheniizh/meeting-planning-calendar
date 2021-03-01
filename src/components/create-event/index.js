@@ -71,7 +71,7 @@ export default class CreateEvent {
               this.sendFormData(newEventData);
 
               setTimeout(() => {
-                document.location.href = '/';
+                document.location.href = '/meeting-planning-calendar/';
               }, 500);
               console.log('No data');
             })()
@@ -91,7 +91,7 @@ export default class CreateEvent {
                     this.sendFormData(newEventData);
 
                     setTimeout(() => {
-                      document.location.href = '/';
+                      document.location.href = '/meeting-planning-calendar/';
                     }, 2000);
                   })();
             })();
