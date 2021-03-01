@@ -16,6 +16,11 @@ export default class Page {
       <div data-element="createEvent">
         <!-- CreateEvent component -->
       </div>
+      <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <!-- toast element -->
+        </div>
+      </div>
     </div>`;
   }
 

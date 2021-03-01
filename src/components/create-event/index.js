@@ -203,11 +203,6 @@ export default class CreateEvent {
           <button type="submit" class="btn btn-primary">Create</button>
         </div>
       </form>
-      <div aria-live="polite" aria-atomic="true" class="position-relative">
-          <div class="toast-container position-fixed bottom-0 end-0 p-3">
-
-          </div>
-        </div>
     </div>`;
   }
 
@@ -261,40 +256,6 @@ export default class CreateEvent {
 
     return a.join('');
   }
-
-  // showToast(message = 'API response: succesful', status) {
-  //   const toastTemplate = `
-  //   <div class="toast calendar__toast_${status} align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-  //     <div class="d-flex">
-  //       <div class="toast-body">
-  //         ${message}
-  //       </div>
-  //     </div>
-  //   </div>`;
-
-  //   const toastContainer = this.element.querySelector('.toast-container');
-
-  //   const wrapper = document.createElement('div');
-  //   wrapper.innerHTML = toastTemplate;
-  //   const element = wrapper.firstElementChild;
-
-  //   toastContainer.appendChild(element);
-
-  //   const toast = toastContainer.lastElementChild;
-
-  //   const toastDelay = 2000;
-  //   const toastRender = new bootstrap.Toast(toast, {
-  //     animation: true,
-  //     autohide: true,
-  //     delay: toastDelay,
-  //   });
-
-  //   toastRender.show();
-
-  //   setTimeout(() => {
-  //     toastContainer.firstElementChild.remove();
-  //   }, toastDelay);
-  // }
 
   destroy() {
     this.element.remove();
