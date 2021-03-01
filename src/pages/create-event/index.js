@@ -22,14 +22,27 @@ export default class Page {
     try {
       const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
 
-      const result = await response.json();
+      if (!response.ok) {
+        try {
+          const result = await response.statusText;
+          return console.log(result);
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-      if ((await result) === null) return console.log('No users');
+      try {
+        const result = await response.json();
 
-      this.users = await result.map((item) => ({
-        id: item.id,
-        data: JSON.parse(item.data),
-      }));
+        if ((await result) === null) return console.log('No users');
+
+        this.users = await result.map((item) => ({
+          id: item.id,
+          data: JSON.parse(item.data),
+        }));
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }
