@@ -71,7 +71,7 @@ export default class CreateEvent {
               this.sendFormData(newEventData);
 
               setTimeout(() => {
-                document.location.href = '/meeting-planning-calendar/';
+                document.location.href = '/';
               }, 500);
               console.log('No data');
             })()
@@ -91,7 +91,7 @@ export default class CreateEvent {
                     this.sendFormData(newEventData);
 
                     setTimeout(() => {
-                      document.location.href = '/meeting-planning-calendar/';
+                      document.location.href = '/';
                     }, 2000);
                   })();
             })();
@@ -207,7 +207,7 @@ export default class CreateEvent {
         </div>
 
         <div class='create-event__buttons-container'>
-          <a href='/meeting-planning-calendar/'>
+          <a href='/'>
             <button type="button" class="btn btn-outline-dark create-event__button">Cancel</button>
           </a>
 
