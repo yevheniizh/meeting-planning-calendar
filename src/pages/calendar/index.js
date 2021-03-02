@@ -1,11 +1,6 @@
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
-import showToast from '../../components/notification';
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const SYSTEM = process.env.SYSTEM;
-const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
-const ENTITY_USERS = process.env.ENTITY_USERS;
+import Database from '../../database';
 
 export default class Page {
   element; //html element
@@ -29,78 +24,6 @@ export default class Page {
     `;
   }
 
-  async getUsers() {
-    try {
-      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`);
-
-      if (!response.ok) {
-        try {
-          const result = await response.statusText;
-          return showToast(`API: ${result}`, 'error');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      try {
-        const result = await response.json();
-
-        if ((await result) === null)
-          return showToast('API: no users', 'succesful');
-
-        this.users = await result.map((item) => ({
-          id: item.id,
-          data: JSON.parse(item.data),
-        }));
-
-        setTimeout(
-          () => showToast('API: users downloaded succesfully', 'succesful'),
-          100
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async getData() {
-    try {
-      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
-
-      if (!response.ok) {
-        try {
-          const result = await response.statusText;
-          return showToast(`API: ${result}`, 'error');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      try {
-        const result = await response.json();
-
-        if ((await result) === null)
-          return showToast('API: no events', 'warning');
-
-        this.meetings = await result.map((item) => ({
-          id: item.id,
-          data: JSON.parse(item.data),
-        }));
-
-        setTimeout(
-          () => showToast('API: data downloaded succesfully', 'succesful'),
-          100
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async render() {
     const element = document.createElement('div');
     element.innerHTML = this.template;
@@ -108,8 +31,10 @@ export default class Page {
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
 
-    await this.getData();
-    await this.getUsers();
+    // get data with async singleton
+    const database = await Database.instance();
+    this.users = await database.getUsers();
+    this.meetings = await database.getData();
 
     const getSessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 

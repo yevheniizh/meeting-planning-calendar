@@ -1,9 +1,6 @@
 import escapeHtml from '../../utils/escape-html.js';
 import showToast from '../notification';
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const SYSTEM = process.env.SYSTEM;
-const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
+import Database from '../../database/index.js';
 
 export default class CreateEvent {
   element; //html element
@@ -46,100 +43,10 @@ export default class CreateEvent {
     }
 
     if (newEventData.name.length && newEventData.members.length) {
-      this.checkTimeSlotAvailability(newEventData);
+      const database = await Database.instance();
+      await database.checkTimeSlotAvailability(newEventData);
     }
   };
-
-  async checkTimeSlotAvailability(newEventData) {
-    try {
-      const response = await fetch(`${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`);
-
-      if (!response.ok) {
-        try {
-          const result = await response.statusText;
-          return showToast(`API: ${result}`, (status = 'error'));
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      try {
-        const result = await response.json();
-
-        (await result) === null
-          ? (() => {
-              this.sendFormData(newEventData);
-
-              setTimeout(() => {
-                document.location.href = '/';
-              }, 500);
-              console.log('No data');
-            })()
-          : (() => {
-              const isTableCellFull = result.some(
-                (item) =>
-                  JSON.parse(item.data).day === newEventData.day &&
-                  JSON.parse(item.data).time === newEventData.time
-              );
-
-              isTableCellFull
-                ? showToast(
-                    'API: This time slot is already occupied. Please choose another day or time.',
-                    'warning'
-                  )
-                : (() => {
-                    this.sendFormData(newEventData);
-
-                    setTimeout(() => {
-                      document.location.href = '/';
-                    }, 2000);
-                  })();
-            })();
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async sendFormData(newEventData) {
-    // post event to server
-    try {
-      const response = await fetch(
-        `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-          },
-          body: JSON.stringify({
-            data: JSON.stringify(newEventData),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        try {
-          const result = await response.statusText;
-          return showToast(`API: ${result}`, (status = 'error'));
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      try {
-        const result = await response.status;
-        console.log(result);
-
-        showToast('API: event posted succesfully', 'succesful');
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   render() {
     const wrapper = document.createElement('div');

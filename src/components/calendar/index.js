@@ -1,8 +1,5 @@
+import Database from '../../database';
 import showToast from '../notification';
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const SYSTEM = process.env.SYSTEM;
-const ENTITY_EVENTS = process.env.ENTITY_EVENTS;
 
 export default class Calendar {
   element; //html element
@@ -21,36 +18,10 @@ export default class Calendar {
     );
 
     if (modal) {
-      try {
-        const response = await fetch(
-          `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/` + chosenMeetingId,
-          {
-            method: 'DELETE',
-          }
-        );
+      const database = await Database.instance();
+      const isResponseOK = await database.deleteMeeting(chosenMeetingId);
 
-        if (!response.ok) {
-          try {
-            const result = await response.statusText;
-            return showToast(`API: ${result}`, 'error');
-          } catch (error) {
-            console.log(error);
-          }
-        }
-
-        try {
-          const result = await response.status;
-          console.log(result);
-
-          showToast('API: event deleted succesfully', 'succesful');
-
-          chosenMeeting.remove();
-        } catch (error) {
-          console.log(error);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      if (isResponseOK) chosenMeeting.remove();
     }
   };
 
