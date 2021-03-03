@@ -1,6 +1,6 @@
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
-import Database from '../../database';
+import query from '../../database';
 
 export default class Page {
   element; //html element
@@ -31,10 +31,11 @@ export default class Page {
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
 
-    // get data with async singleton
-    const database = await Database.instance();
-    this.users = await database.getUsers();
-    this.meetings = await database.getData();
+    // query data from database
+    const responseUsers = await query.response('get', 'users');
+    const responseEvents = await query.response('get', 'events');
+    this.users = await responseUsers.define();
+    this.meetings = await responseEvents.define();
 
     const getSessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 

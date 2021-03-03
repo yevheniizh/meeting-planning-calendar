@@ -1,5 +1,5 @@
 import CreateEvent from '../../components/create-event/index.js';
-import Database from '../../database';
+import query from '../../database';
 
 export default class Page {
   element; //html element
@@ -27,9 +27,9 @@ export default class Page {
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
 
-    // await this.getUsers();
-    const database = await Database.instance();
-    this.users = await database.getUsers();
+    // query data from database
+    const response = await query.response('get', 'users');
+    this.users = await response.define();
 
     this.initComponents();
 

@@ -1,4 +1,4 @@
-import Database from '../../database';
+import query from '../../database';
 import showToast from '../notification';
 
 export default class Calendar {
@@ -18,8 +18,8 @@ export default class Calendar {
     );
 
     if (modal) {
-      const database = await Database.instance();
-      const isResponseOK = await database.deleteMeeting(chosenMeetingId);
+      const response = await query.response('delete', chosenMeetingId);
+      const isResponseOK = await response.define();
 
       if (isResponseOK) chosenMeeting.remove();
     }
@@ -28,8 +28,6 @@ export default class Calendar {
   constructor(meetings, users) {
     this.meetings = meetings;
     this.users = users;
-
-    this.members = JSON.parse(localStorage.getItem('membersDB'));
 
     this.sessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 

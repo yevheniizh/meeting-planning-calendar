@@ -1,6 +1,6 @@
 import escapeHtml from '../../utils/escape-html.js';
 import showToast from '../notification';
-import Database from '../../database/index.js';
+import query from '../../database/index.js';
 
 export default class CreateEvent {
   element; //html element
@@ -43,8 +43,17 @@ export default class CreateEvent {
     }
 
     if (newEventData.name.length && newEventData.members.length) {
-      const database = await Database.instance();
-      await database.checkTimeSlotAvailability(newEventData);
+      const response = await query.response('isTimeSlotEmpty', newEventData);
+      const isResponseOK = await response.define();
+
+      if (isResponseOK) {
+        const response = await query.response('post', newEventData);
+        await response.define();
+
+        setTimeout(() => {
+          document.location.href = '/';
+        }, 2000);
+      }
     }
   };
 
