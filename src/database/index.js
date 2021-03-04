@@ -1,4 +1,5 @@
 import showToast from '../components/notification';
+import Catch from './decorator';
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const SYSTEM = process.env.SYSTEM;
@@ -12,9 +13,8 @@ class Get {
 
     if (data === 'users') {
       this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_USERS}`;
-    } else if (data === 'events') {
-      this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`;
-    } else {
+    }
+    if (data === 'events') {
       this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}`;
     }
 
@@ -25,9 +25,6 @@ class Get {
 
   async getTry(response) {
     const result = await response.json();
-
-    if ((await result) === null)
-      return showToast(`API: no ${this.data}`, 'warning');
 
     const dataResult = await result.map((item) => ({
       id: item.id,
@@ -108,7 +105,6 @@ class IsTimeSlotEmpty {
         'API: This time slot is already occupied. Please choose another day or time',
         'warning'
       );
-
       return false;
     }
 
@@ -132,35 +128,29 @@ class QueriesFactory {
   };
 
   /* this is the response body template for factory */
-  response(type = 'get', data) {
+  response(type, data) {
     const Response = QueriesFactory.response[type];
     const query = new Response(data);
     query.type = type;
-    query.define = async function () {
-      try {
-        const response = await fetch(this.url, this.options);
 
-        if (!response.ok) {
-          try {
-            const result = await response.statusText;
-            showToast(`API: ${result}`, 'error');
+    const responseBody = async function () {
+      const response = await fetch(this.url, this.options);
 
-            return response.ok;
-          } catch (error) {
-            console.log(error);
-          }
-        }
+      if (!response.ok) {
+        const message = `Error ${response.status}: ${response.statusText}`; // Not Found (for 404)
+        showToast(`API: ${message}`, 'error');
 
-        try {
-          /**  for different responses this element has different body **/
-          return await this.getTry(response);
-        } catch (error) {
-          console.log(error);
-        }
-      } catch (error) {
-        console.log(error);
+        console.error(new FetchError(response, message));
+
+        return response.ok;
       }
+
+      /*  different body for different responses */
+      return this.getTry(response);
     };
+
+    /* Decorator */
+    query.define = Catch(responseBody);
 
     return query;
   }
