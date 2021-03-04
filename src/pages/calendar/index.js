@@ -1,6 +1,7 @@
 import { User, Admin } from '../../components/userRoles';
 import LogInModal from '../../components/logIn-modal';
 import query from '../../database';
+import { noMembersMock } from '../../fixtures-members';
 
 export default class Page {
   element; //html element
@@ -34,8 +35,8 @@ export default class Page {
     // query data from database
     const responseUsers = await query.response('get', 'users');
     const responseEvents = await query.response('get', 'events');
-    this.users = await responseUsers.define();
-    this.meetings = await responseEvents.define();
+    this.users = (await responseUsers.define()) || noMembersMock;
+    this.meetings = (await responseEvents.define()) || [];
 
     const getSessionUser = JSON.parse(sessionStorage.getItem('memberLoggedIn'));
 

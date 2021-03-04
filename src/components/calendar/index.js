@@ -100,6 +100,15 @@ export default class Calendar {
   }
 
   getMembersDropdown() {
+    if (this.sessionUser.name === 'guest') {
+      return `
+      <div class='calendar__header_handling-dropdown'>
+        <select class='form-select form-select-lg' id='membersDropdown'>
+          <option value='All members'>All members</option>
+        </select>
+      </div>`;
+    }
+
     return `
     <div class='calendar__header_handling-dropdown'>
       <select class='form-select form-select-lg' id='membersDropdown'>
