@@ -112,6 +112,26 @@ class IsTimeSlotEmpty {
   }
 }
 
+class Put {
+  constructor(data) {
+    this.data = data;
+    this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/${data.id}`;
+    this.options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({
+        data: JSON.stringify(data.data),
+      }),
+    };
+  }
+
+  async getTry() {
+    showToast('API: event changed succesfully', 'succesful');
+  }
+}
+
 class QueriesFactory {
   static instance() {
     if (!this._instance) {
@@ -124,6 +144,7 @@ class QueriesFactory {
     get: Get,
     isTimeSlotEmpty: IsTimeSlotEmpty,
     post: Post,
+    put: Put,
     delete: Delete,
   };
 

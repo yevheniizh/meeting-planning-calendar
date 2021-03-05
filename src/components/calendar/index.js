@@ -45,7 +45,7 @@ export default class Calendar {
 
     this.subElements = this.getSubElements(this.element);
 
-    this.initEventListeners();
+    this.initEventListeners(this.meetings);
 
     return this.element;
   }
@@ -163,27 +163,27 @@ export default class Calendar {
 
       <ul class='calendar__table-column' data-day='Mon'>
         <li class='calendar__table-column-header'>Mon</li>
-        ${this.getTableColumn()}
+        ${this.getTableColumn('Mon')}
       </ul>
 
       <ul class='calendar__table-column' data-day='Tue'>
         <li class='calendar__table-column-header'>Tue</li>
-        ${this.getTableColumn()}
+        ${this.getTableColumn('Tue')}
       </ul>
 
       <ul class='calendar__table-column' data-day='Wed'>
         <li class='calendar__table-column-header'>Wed</li>
-        ${this.getTableColumn()}
+        ${this.getTableColumn('Wed')}
       </ul>
 
       <ul class='calendar__table-column' data-day='Thu'>
         <li class='calendar__table-column-header'>Thu</li>
-        ${this.getTableColumn()}
+        ${this.getTableColumn('Thu')}
       </ul>
 
       <ul class='calendar__table-column' data-day='Fri'>
         <li class='calendar__table-column-header'>Fri</li>
-        ${this.getTableColumn()}
+        ${this.getTableColumn('Fri')}
       </ul>
     </div>`;
   }
@@ -198,13 +198,14 @@ export default class Calendar {
     return a.join('');
   }
 
-  getTableColumn() {
+  getTableColumn(day) {
     let a = [];
 
     for (let i = this.start; i <= this.end; i = i + this.duration) {
       a.push(
         `<li
           data-time='${i}:00'
+          data-day='${day}'
         ></li>`
       );
     }
@@ -224,10 +225,10 @@ export default class Calendar {
 
       if (this.canDeleteMeetings()) {
         return (currentRow.innerHTML = `
-      <div data-meeting='${meeting.id}' data-name='${meeting.data.name}' style='visibility: visible'>
-        <a href='/meetings/${meeting.id}' class='calendar__table-column_meeting'>
-          ${meeting.data.name}
-        </a>
+      <div draggable='true' data-meeting='${meeting.id}' data-meetingDay='${meeting.data.day}' data-meetingTime='${meeting.data.time}' style='visibility: visible'>
+          <div class='calendar__table-column_meeting'>
+            ${meeting.data.name}
+          </div>
         <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
       </div>`);
       }
@@ -241,7 +242,67 @@ export default class Calendar {
     });
   }
 
-  initEventListeners() {
+  dragAndDropEvents(meetings) {
+    let dragged;
+
+    document.addEventListener('dragstart', function (event) {
+      dragged = event.target;
+      event.target.style.opacity = 0.5;
+    });
+
+    document.addEventListener('dragend', function (event) {
+      event.target.style.opacity = '';
+    });
+
+    document.addEventListener('dragover', function (event) {
+      event.preventDefault();
+    });
+
+    document.addEventListener('dragenter', function (event) {
+      if (event.target.dataset.time) {
+        event.target.style.background = 'purple';
+      }
+    });
+
+    document.addEventListener('dragleave', function (event) {
+      if (event.target.dataset.time) {
+        event.target.style.background = '';
+      }
+    });
+
+    async function getResponse(updatedMeeting) {
+      const response = await query.response('put', updatedMeeting);
+      await response.define();
+    }
+
+    document.addEventListener('drop', function (event) {
+      event.preventDefault();
+
+      if (event.target.dataset.time) {
+        event.target.style.background = '';
+        dragged.parentNode.removeChild(dragged);
+        event.target.appendChild(dragged);
+
+        const draggedMeetingId = dragged.dataset.meeting;
+
+        // set updated data into DOM
+        const newDraggedMeetingDay = event.target.dataset.day;
+        const newDraggedMeetingTime = event.target.dataset.time;
+
+        const draggedMeeting = [...meetings].find(
+          ({ id }) => id === draggedMeetingId
+        );
+
+        draggedMeeting.data.day = newDraggedMeetingDay;
+        draggedMeeting.data.time = newDraggedMeetingTime;
+        getResponse(draggedMeeting);
+      }
+    });
+  }
+
+  initEventListeners(meetings) {
+    this.dragAndDropEvents(meetings);
+
     // remove event from calendar
     if (this.canDeleteMeetings()) {
       const deleteButton = this.element.querySelectorAll('[data-delete]');
