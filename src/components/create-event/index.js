@@ -89,45 +89,47 @@ export default class CreateEvent {
       <form class='create-event__form'>
         <div class='create-event__form-element'>
           <div class='create-event__form-description'>
-            Name of the event:
+            Name of the event
           </div>
           <div class='create-event__form-input'>
-            <input
-              placeholder='Type here'
-              type='search'
-              class='form-control'
-              data-name='name'
-            />
+          <input
+            placeholder='Type here'
+            type='search'
+            class='form-control'
+            data-name='name'
+          />
           </div>
         </div>
 
         <div class='create-event__form-element'>
           <div class='create-event__form-description'>
-            Participants:
+            Participants
           </div>
           ${this.getMembersDropdown()}
         </div>
 
         <div class='create-event__form-element'>
           <div class='create-event__form-description'>
-            Day:
+            Day
           </div>
           ${this.getDaysDropdown()}
         </div>
 
         <div class='create-event__form-element'>
           <div class='create-event__form-description'>
-            Time:
+            Time
           </div>
           ${this.getEventHoursDropdown()}
         </div>
 
-        <div class='create-event__buttons-container'>
-          <a href='/'>
-            <button type="button" class="btn btn-outline-dark create-event__button">Cancel</button>
-          </a>
+        <div class='create-event__form-element'>
+          <button type="submit" class="btn btn-outline-dark create-event__button_create">Create</button>
+        </div>
 
-          <button type="submit" class="btn btn-outline-dark create-event__button">Create</button>
+        <div class='create-event__form-element'>
+          <a href='/'>
+            <button type="button" class="btn btn-outline-dark create-event__button_cancel">Cancel</button>
+          </a>
         </div>
       </form>
     </div>`;
