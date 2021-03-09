@@ -34,7 +34,7 @@ export default class Calendar {
     this.render();
   }
 
-  async render() {
+  render() {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = this.getTable();
 
