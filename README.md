@@ -14,7 +14,8 @@ This is a simple app that shows schedule of meetings. You can add new one or rem
 - SCSS;
 - Bootstrap;
 - Webpack;
-- localStorage (as DB)
+- Lint/Prettier
+- Jest
 
 ## Completed by
 
@@ -26,20 +27,26 @@ This is a simple app that shows schedule of meetings. You can add new one or rem
 ## To start project in development mode:
 
 ```sh
-$ npm install       // install the dependencies
-$ npm run start     // launch 'WebpackDevServer'
+$ npm install         // install the dependencies
+$ npm run start       // launch 'WebpackDevServer'
 ```
 
 ## To build project:
 
 ```sh
-$ npm run dev       // generate a 'development' build
-$ npm run build     // generate a 'production' build
+$ npm run dev         // generate a 'development' build
+$ npm run build       // generate a 'production' build
 ```
 
 ## To deploy project to GitHub Pages
 
 ```sh
-$ npm run build     // generate a 'production' build
-$ npm run deploy    // deploy it to 'GitHub Pages'
+$ npm run build       // generate a 'production' build
+$ npm run deploy      // deploy it to 'GitHub Pages'
+```
+## To launch tests
+
+```sh
+$ npm run test        // start all tests one time
+$ npm run test:watch  // start all tests in 'watch' mode
 ```
