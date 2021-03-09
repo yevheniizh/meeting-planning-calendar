@@ -51,7 +51,7 @@ export default class CreateEvent {
         await response.define();
 
         setTimeout(() => {
-          document.location.href = '/';
+          document.location.href = '/meeting-planning-calendar/';
         }, 2000);
       }
     }
@@ -127,7 +127,7 @@ export default class CreateEvent {
         </div>
 
         <div class='create-event__form-element'>
-          <a href='/'>
+          <a href='/meeting-planning-calendar/'>
             <button type="button" class="btn btn-outline-dark create-event__button_cancel">Cancel</button>
           </a>
         </div>
