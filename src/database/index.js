@@ -71,7 +71,10 @@ class Delete {
   }
 
   async getTry(response) {
-    showToast(`API: event deleted succesfully`, 'succesful');
+    setTimeout(
+      () => showToast(`API: event deleted succesfully`, 'succesful'),
+      100
+    );
 
     return response.ok;
   }
