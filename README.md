@@ -14,7 +14,7 @@ This is a simple app that shows schedule of meetings. You can add new one or rem
 - SCSS;
 - Bootstrap;
 - Webpack;
-- Lint/Prettier
+- ESLint/Prettier
 - Jest
 
 ## Completed by
@@ -49,4 +49,10 @@ $ npm run deploy      // deploy it to 'GitHub Pages'
 ```sh
 $ npm run test        // start all tests one time
 $ npm run test:watch  // start all tests in 'watch' mode
+```
+## To launch eslint
+
+```sh
+$ npm run lint        // start analizing code and searching issues over all app
+$ npm run lint:fix    // start fixing as many issues as possible over all app
 ```
