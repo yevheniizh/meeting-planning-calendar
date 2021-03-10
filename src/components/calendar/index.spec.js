@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
 import Calendar from './index.js';
-import { meetingsMock } from '../../fixtures-meetings';
+import meetingsMock from '../../fixtures-meetings';
 import { membersMock } from '../../fixtures-members';
 
 describe('tests-for-calendar-component', () => {
@@ -11,12 +12,8 @@ describe('tests-for-calendar-component', () => {
       'memberLoggedIn',
       JSON.stringify({ name: 'Polina', rights: 'admin' })
     );
-    Calendar.prototype.canCreateMeetings = () => {
-      return true;
-    };
-    Calendar.prototype.canDeleteMeetings = () => {
-      return true;
-    };
+    Calendar.prototype.canCreateMeetings = () => true;
+    Calendar.prototype.canDeleteMeetings = () => true;
     calendar = new Calendar(meetingsMock, membersMock);
     document.body.append(calendar.element);
   });
@@ -44,7 +41,7 @@ describe('tests-for-calendar-component', () => {
 
     expect(calendar.meetings.length).toEqual(5);
 
-    const [meeting1, ...meetings] = calendar.meetings;
+    const [meeting1] = calendar.meetings;
 
     expect(meeting1).toStrictEqual({
       data: {
@@ -69,7 +66,7 @@ describe('tests-for-calendar-component', () => {
 
     expect(calendar.users.length).toEqual(4);
 
-    const [member1, ...members] = calendar.users;
+    const [member1] = calendar.users;
 
     expect(member1).toStrictEqual({
       id: '0001',

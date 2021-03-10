@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import Calendar from '../calendar';
 
 export class User extends Calendar {

@@ -20,6 +20,7 @@ export default (message = 'API response: succesful', status) => {
   toastContainer.appendChild(toastElement);
 
   const toast = toastContainer.lastElementChild;
+  // eslint-disable-next-line no-undef
   const toastRender = new bootstrap.Toast(toast, {
     animation: true,
     autohide: true,

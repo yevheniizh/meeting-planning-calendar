@@ -30,17 +30,19 @@ export default class Router {
   }
 
   async route() {
-    let strippedPath = decodeURI(window.location.pathname).replace(
+    const strippedPath = decodeURI(window.location.pathname).replace(
       /^\/|\/$/,
       ''
     );
 
     let match;
 
-    for (let route of this.routes) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const route of this.routes) {
       match = strippedPath.match(route.pattern);
 
       if (match) {
+        // eslint-disable-next-line no-await-in-loop
         this.page = await this.changePage(route.path, match);
         break;
       }
@@ -64,11 +66,11 @@ export default class Router {
       this.page.destroy();
     }
 
-    return await renderPage(path, match);
+    await renderPage(path, match);
   }
 
   navigate(path) {
-    history.pushState(null, null, path);
+    window.history.pushState(null, null, path);
     this.route();
   }
 

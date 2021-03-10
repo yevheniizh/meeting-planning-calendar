@@ -15,9 +15,10 @@ export default class LogInModal {
             <div class='calendar__header_handling-dropdown'>
               <select class='form-select form-select-lg' id='membersDropdownModal'>
                 ${this.members
-                  .map((member) => {
-                    return `<option value='${member.data.name}' data-rights='${member.data.rights}'>${member.data.name} (${member.data.rights})</option>`;
-                  })
+                  .map(
+                    (member) =>
+                      `<option value='${member.data.name}' data-rights='${member.data.rights}'>${member.data.name} (${member.data.rights})</option>`
+                  )
                   .join('')}
               </select>
             </div>

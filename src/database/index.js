@@ -1,4 +1,6 @@
+/* eslint-disable prefer-destructuring */
 import showToast from '../components/notification';
+import FetchError from '../utils/fetch-error';
 import Catch from './decorator';
 
 const BACKEND_URL = process.env.BACKEND_URL;
@@ -64,7 +66,7 @@ class Post {
 class Delete {
   constructor(data) {
     this.data = data;
-    this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/` + data;
+    this.url = `${BACKEND_URL}/${SYSTEM}/${ENTITY_EVENTS}/${data}`;
     this.options = {
       method: 'DELETE',
     };

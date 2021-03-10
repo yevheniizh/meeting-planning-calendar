@@ -5,9 +5,13 @@ import { noMembersMock } from '../../fixtures-members';
 
 export default class Page {
   element; //html element
+
   subElements = {}; //selected elements
+
   components = {}; //imported initialized components
+
   meetings = {};
+
   users = {};
 
   get template() {
@@ -76,6 +80,7 @@ export default class Page {
     const logInModal = new LogInModal(this.users);
     this.element.querySelector('#calendarPage').innerHTML = logInModal.template;
 
+    // eslint-disable-next-line no-undef
     const myModal = new bootstrap.Modal(
       this.element.querySelector('#staticBackdrop'),
       {}
@@ -124,11 +129,15 @@ export default class Page {
   initComponents(rights) {
     if (rights === 'admin') {
       const calendar = new Admin(this.meetings, this.users);
-      return (this.components.calendar = calendar);
+      this.components.calendar = calendar;
+
+      return this.components;
     }
 
     const calendar = new User(this.meetings, this.users);
-    return (this.components.calendar = calendar);
+    this.components.calendar = calendar;
+
+    return this.components;
   }
 
   renderComponents() {
@@ -141,8 +150,6 @@ export default class Page {
   }
 
   destroy() {
-    for (const component of Object.values(this.components)) {
-      component.destroy();
-    }
+    Object.values(this.components).forEach((component) => component.destroy());
   }
 }

@@ -3,9 +3,13 @@ import showToast from '../notification';
 
 export default class Calendar {
   element; //html element
+
   subElements = {}; //html element, meetings
+
   start = 10;
+
   end = 18;
+
   duration = 1;
 
   onRemoveMeetingClick = async (event) => {
@@ -13,7 +17,7 @@ export default class Calendar {
     const chosenMeetingId = chosenMeeting.dataset.meeting;
     const chosenMeetingName = chosenMeeting.dataset.name;
 
-    const modal = confirm(
+    const modal = global.confirm(
       `Are you sure you want to delete '${chosenMeetingName}' event?`
     );
 
@@ -120,9 +124,10 @@ export default class Calendar {
 
   get membersList() {
     return this.users
-      .map((user) => {
-        return `<option value='${user.data.name}' data-member='${user.data.name}'>${user.data.name}</option>`;
-      })
+      .map(
+        (user) =>
+          `<option value='${user.data.name}' data-member='${user.data.name}'>${user.data.name}</option>`
+      )
       .join('');
   }
 
@@ -189,9 +194,9 @@ export default class Calendar {
   }
 
   getTableHoursColumn() {
-    let a = [];
+    const a = [];
 
-    for (let i = this.start; i <= this.end; i = i + this.duration) {
+    for (let i = this.start; i <= this.end; i += this.duration) {
       a.push(`<li>${i}:00</li>`);
     }
 
@@ -199,9 +204,9 @@ export default class Calendar {
   }
 
   getTableColumn(day) {
-    let a = [];
+    const a = [];
 
-    for (let i = this.start; i <= this.end; i = i + this.duration) {
+    for (let i = this.start; i <= this.end; i += this.duration) {
       a.push(
         `<li
           data-time='${i}:00'
@@ -224,47 +229,54 @@ export default class Calendar {
       );
 
       if (this.canDeleteMeetings()) {
-        return (currentRow.innerHTML = `
-      <div draggable='true' data-meeting='${meeting.id}' data-meetingDay='${meeting.data.day}' data-meetingTime='${meeting.data.time}' style='visibility: visible'>
-          <div class='calendar__table-column_meeting'>
-            ${meeting.data.name}
-          </div>
-        <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
-      </div>`);
+        const template = `<div draggable='true' data-meeting='${meeting.id}' data-meetingDay='${meeting.data.day}' data-meetingTime='${meeting.data.time}' style='visibility: visible'>
+              <div class='calendar__table-column_meeting'>
+                ${meeting.data.name}
+              </div>
+            <button class='calendar__table-column_meeting_delete' data-delete='delete'>&times;</button>
+          </div>`;
+
+        currentRow.innerHTML = template;
+
+        return currentRow;
       }
 
-      return (currentRow.innerHTML = `
+      const template = `
       <div data-meeting='${meeting.id}' data-name='${meeting.data.name}' style='visibility: visible'>
         <div class='calendar__table-column_meeting'>
           ${meeting.data.name}
         </div>
-      </div>`);
+      </div>`;
+
+      currentRow.innerHTML = template;
+
+      return currentRow;
     });
   }
 
   dragAndDropEvents(meetings) {
     let dragged;
 
-    document.addEventListener('dragstart', function (event) {
+    document.addEventListener('dragstart', (event) => {
       dragged = event.target;
       event.target.style.opacity = 0.5;
     });
 
-    document.addEventListener('dragend', function (event) {
+    document.addEventListener('dragend', (event) => {
       event.target.style.opacity = '';
     });
 
-    document.addEventListener('dragover', function (event) {
+    document.addEventListener('dragover', (event) => {
       event.preventDefault();
     });
 
-    document.addEventListener('dragenter', function (event) {
+    document.addEventListener('dragenter', (event) => {
       if (event.target.dataset.time) {
         event.target.style.background = 'purple';
       }
     });
 
-    document.addEventListener('dragleave', function (event) {
+    document.addEventListener('dragleave', (event) => {
       if (event.target.dataset.time) {
         event.target.style.background = '';
       }
@@ -275,7 +287,7 @@ export default class Calendar {
       await response.define();
     }
 
-    document.addEventListener('drop', function (event) {
+    document.addEventListener('drop', (event) => {
       event.preventDefault();
 
       if (event.target.dataset.time) {
@@ -305,10 +317,10 @@ export default class Calendar {
 
     // remove event from calendar
     if (this.canDeleteMeetings()) {
-      const deleteButton = this.element.querySelectorAll('[data-delete]');
-      for (let button of deleteButton) {
-        button.addEventListener('pointerdown', this.onRemoveMeetingClick);
-      }
+      const deleteButtons = this.element.querySelectorAll('[data-delete]');
+      deleteButtons.forEach((button) =>
+        button.addEventListener('pointerdown', this.onRemoveMeetingClick)
+      );
     }
 
     // filter events by team member
@@ -331,9 +343,9 @@ export default class Calendar {
       return showToast('No events to filter', 'warning');
 
     if (chosenMember === 'All members') {
-      for (let item of Object.keys(this.subElements)) {
-        this.subElements[item].style.visibility = 'visible';
-      }
+      Object.keys(this.subElements).forEach((meeting) => {
+        this.subElements[meeting].style.visibility = 'visible';
+      });
 
       return [...this.meetings];
     }
@@ -352,16 +364,16 @@ export default class Calendar {
       .map((item) => item.id);
 
     // insert style = 'display: visible' into all meetings
-    for (let item of Object.keys(this.subElements)) {
-      this.subElements[item].style.visibility = 'visible';
-    }
+    Object.keys(this.subElements).forEach((meeting) => {
+      this.subElements[meeting].style.visibility = 'visible';
+    });
 
     // insert style = 'display: none' into filtered¸ meetings
-    for (let item of filteredMeetings) {
-      if (Object.keys(this.subElements).includes(item)) {
-        this.subElements[item].style.visibility = 'hidden';
+    filteredMeetings.forEach((meeting) => {
+      if (Object.keys(this.subElements).includes(meeting)) {
+        this.subElements[meeting].style.visibility = 'hidden';
       }
-    }
+    });
 
     return filteredMeetings;
   }

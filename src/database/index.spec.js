@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
 import query from './index.js';
-import { meetingsMock } from '../fixtures-meetings';
+import meetingsMock from '../fixtures-meetings';
 import { membersMock } from '../fixtures-members';
 
 describe('tests-for-async-CRUD-operations', () => {

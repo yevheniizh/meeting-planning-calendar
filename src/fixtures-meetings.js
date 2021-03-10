@@ -1,4 +1,4 @@
-export const meetingsMock = [
+const meetingsMock = [
   {
     id: '0000-0000-0000-0001',
     data: {
@@ -45,3 +45,5 @@ export const meetingsMock = [
     },
   },
 ];
+
+export default meetingsMock;

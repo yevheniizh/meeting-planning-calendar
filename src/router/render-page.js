@@ -1,6 +1,4 @@
 export default async function (path, match) {
-  const main = document.querySelector('main');
-
   const { default: Page } = await import(
     /* webpackChunkName: "[request]" */ `../pages/${path}/index.js`
   );

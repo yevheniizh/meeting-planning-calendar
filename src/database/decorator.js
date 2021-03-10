@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import FetchError from '../utils/fetch-error';
 import showToast from '../components/notification';
 

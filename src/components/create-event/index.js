@@ -4,9 +4,13 @@ import query from '../../database/index.js';
 
 export default class CreateEvent {
   element; //html element
+
   start = 10;
+
   end = 18;
+
   duration = 1;
+
   days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
   constructor(users) {
@@ -34,21 +38,22 @@ export default class CreateEvent {
     ).value;
     newEventData.members = Object.values(chosenMembers)
       .filter((item) => item.checked)
-      .reduce((acc, item) => {
-        return [...acc, { id: item.value }];
-      }, []);
+      .reduce((acc, item) => [...acc, { id: item.value }], []);
 
     if (!newEventData.name.length || !newEventData.members.length) {
       showToast('Please fill out all fields', 'warning');
     }
 
     if (newEventData.name.length && newEventData.members.length) {
-      const response = await query.response('isTimeSlotEmpty', newEventData);
-      const isResponseOK = await response.define();
+      const checkResponse = await query.response(
+        'isTimeSlotEmpty',
+        newEventData
+      );
+      const isResponseOK = await checkResponse.define();
 
       if (isResponseOK) {
-        const response = await query.response('post', newEventData);
-        await response.define();
+        const postResponse = await query.response('post', newEventData);
+        await postResponse.define();
 
         setTimeout(() => {
           document.location.href = '/';
@@ -77,7 +82,9 @@ export default class CreateEvent {
 
     allMembersCheckbox.addEventListener('click', () => {
       const allMembers = document.querySelectorAll('[data-member]');
-      [...allMembers].forEach((item) => (item.checked = !item.checked));
+      [...allMembers].forEach((item) => {
+        item.checked = !item.checked;
+      });
     });
 
     this.element.addEventListener('submit', this.onFormSubmit);
@@ -143,13 +150,13 @@ export default class CreateEvent {
         <label class="form-check-label" for="allMembersCheckbox">All members</label>
       </div>
       ${this.members
-        .map((member) => {
-          return `
+        .map(
+          (member) => `
           <div class="form-check">
             <input class="form-check-input" class="member" type="checkbox" data-member=${member.id} value=${member.id}>
             <label class="form-check-label">${member.data.name}</label>
-          </div>`;
-        })
+          </div>`
+        )
         .join('')}
     </div>`;
   }
@@ -159,9 +166,9 @@ export default class CreateEvent {
     <div class='create-event__form-input'>
       <select class='form-select form-select-lg'>
         ${this.days
-          .map((day) => {
-            return `<option data-day='${day}' value='${day}'>${day}</option>`;
-          })
+          .map(
+            (day) => `<option data-day='${day}' value='${day}'>${day}</option>`
+          )
           .join('')}
       </select>
     </div>`;
@@ -177,9 +184,9 @@ export default class CreateEvent {
   }
 
   getEventHours() {
-    let a = [];
+    const a = [];
 
-    for (let i = this.start; i <= this.end; i = i + this.duration) {
+    for (let i = this.start; i <= this.end; i += this.duration) {
       a.push(`<option data-time='${i}'>${i}:00</option>`);
     }
 

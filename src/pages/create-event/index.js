@@ -3,8 +3,11 @@ import query from '../../database';
 
 export default class Page {
   element; //html element
+
   subElements = {}; //selected elements
+
   components = {}; //imported initialized components
+
   users = {};
 
   get template() {
@@ -63,8 +66,6 @@ export default class Page {
   }
 
   destroy() {
-    for (const component of Object.values(this.components)) {
-      component.destroy();
-    }
+    Object.values(this.components).forEach((component) => component.destroy());
   }
 }
