@@ -1,8 +1,29 @@
 {
-  "extends": ["airbnb", "prettier"],
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["airbnb-base", "prettier"],
   "plugins": ["prettier"],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
   "rules": {
-    "prettier/prettier": ["error"],
-    "import/no-anonymous-default-export": 0
+    "prettier/prettier": "warn",
+    "import/no-anonymous-default-export": "off", // allow unnamed functions
+    "max-classes-per-file": ["error", 999], // allow using any quantity of classes in file
+    "no-underscore-dangle": "off", // allow using underscores with declaration
+    "import/extensions": "off", // allow using [.js] into imports
+    "func-names": "off", // allow using unnamed functions
+    "class-methods-use-this": "off", // allow using class methods without using this
+    "no-param-reassign": "off", // allow using reassign params
+    "spaced-comment": "off", // allow using comments
+    "no-console": "off" // allow using console.log()/console.error()
   }
 }
