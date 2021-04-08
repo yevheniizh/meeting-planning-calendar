@@ -5,6 +5,7 @@
 This is a simple app that shows schedule of meetings. You can add new one or remove existing meeting. Also you can filter meetings by participant.
 
 ## Preview (click to open project)
+❗️ The content served over **http** protocol. <span style="color:red">Allow **insecure content** in site settings, If all API requests will be blocked with 'insecure resourse' error</span>
 
 [![preview](./preview.png)](https://zzzhyrov.github.io/meeting-planning-calendar/)
 
